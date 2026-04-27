@@ -110,13 +110,57 @@
 
 ## Traceability
 
-| REQ-ID | Phase |
-|--------|-------|
-| FOUND-01 to FOUND-07 | Phase 1: Foundation |
-| AUTH-01 to AUTH-04 | Phase 2: Auth + Profile + Settings |
-| PROF-01 to PROF-05 | Phase 2: Auth + Profile + Settings |
-| INBOX-01 to INBOX-05 | Phase 3: Core Messaging |
-| CHAT-01 to CHAT-13 | Phase 3: Core Messaging |
-| SEC-01 to SEC-05 | Phase 1 (SEC-01–04) + Phase 3 (SEC-05) |
-| INVITE-01 to INVITE-08 | Phase 4: Invite Flow |
-| TEST-01 to TEST-05 | Phase 5: Tests |
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| FOUND-01 | Phase 1: Foundation | Pending |
+| FOUND-02 | Phase 1: Foundation | Pending |
+| FOUND-03 | Phase 1: Foundation | Pending |
+| FOUND-04 | Phase 1: Foundation | Pending |
+| FOUND-05 | Phase 1: Foundation | Pending |
+| FOUND-06 | Phase 1: Foundation | Pending |
+| FOUND-07 | Phase 1: Foundation | Pending |
+| SEC-01 | Phase 1: Foundation | Pending |
+| SEC-02 | Phase 1: Foundation | Pending |
+| SEC-03 | Phase 1: Foundation | Pending |
+| SEC-04 | Phase 1: Foundation | Pending |
+| AUTH-01 | Phase 2: Auth + Profile + Settings | Pending |
+| AUTH-02 | Phase 2: Auth + Profile + Settings | Pending |
+| AUTH-03 | Phase 2: Auth + Profile + Settings | Pending |
+| AUTH-04 | Phase 2: Auth + Profile + Settings | Pending |
+| PROF-01 | Phase 2: Auth + Profile + Settings | Pending |
+| PROF-02 | Phase 2: Auth + Profile + Settings | Pending |
+| PROF-03 | Phase 2: Auth + Profile + Settings | Pending |
+| PROF-04 | Phase 2: Auth + Profile + Settings | Pending |
+| PROF-05 | Phase 2: Auth + Profile + Settings | Pending |
+| INBOX-01 | Phase 3: Core Messaging | Pending |
+| INBOX-02 | Phase 3: Core Messaging | Pending |
+| INBOX-03 | Phase 3: Core Messaging | Pending |
+| INBOX-04 | Phase 3: Core Messaging | Pending |
+| INBOX-05 | Phase 3: Core Messaging | Pending |
+| CHAT-01 | Phase 3: Core Messaging | Pending |
+| CHAT-02 | Phase 3: Core Messaging | Pending |
+| CHAT-03 | Phase 3: Core Messaging | Pending |
+| CHAT-04 | Phase 3: Core Messaging | Pending |
+| CHAT-05 | Phase 3: Core Messaging | Pending |
+| CHAT-06 | Phase 3: Core Messaging | Pending |
+| CHAT-07 | Phase 3: Core Messaging | Pending |
+| CHAT-08 | Phase 3: Core Messaging | Pending |
+| CHAT-09 | Phase 3: Core Messaging | Pending |
+| CHAT-10 | Phase 3: Core Messaging | Pending |
+| CHAT-11 | Phase 3: Core Messaging | Pending |
+| CHAT-12 | Phase 3: Core Messaging | Pending |
+| CHAT-13 | Phase 3: Core Messaging | Pending |
+| SEC-05 | Phase 3: Core Messaging | Pending |
+| INVITE-01 | Phase 4: Invite Flow | Pending |
+| INVITE-02 | Phase 4: Invite Flow | Pending |
+| INVITE-03 | Phase 4: Invite Flow | Pending |
+| INVITE-04 | Phase 4: Invite Flow | Pending |
+| INVITE-05 | Phase 4: Invite Flow | Pending |
+| INVITE-06 | Phase 4: Invite Flow | Pending |
+| INVITE-07 | Phase 4: Invite Flow | Pending |
+| INVITE-08 | Phase 4: Invite Flow | Pending |
+| TEST-01 | Phase 5: Tests | Pending |
+| TEST-02 | Phase 5: Tests | Pending |
+| TEST-03 | Phase 5: Tests | Pending |
+| TEST-04 | Phase 5: Tests | Pending |
+| TEST-05 | Phase 5: Tests | Pending |
