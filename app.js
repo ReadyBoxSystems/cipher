@@ -488,18 +488,19 @@ async function showAcceptInvite(code) {
     return
   }
 
-  // Create conversation and add both members
-  const { data: conv } = await sb.from('conversations').insert({}).select().single()
+  // Generate ID client-side — avoids RLS blocking the SELECT before members are added
+  const convId = crypto.randomUUID()
+  await sb.from('conversations').insert({ id: convId })
   await sb.from('conversation_members').insert([
-    { conversation_id: conv.id, user_id: invite.creator_id },
-    { conversation_id: conv.id, user_id: state.user.id }
+    { conversation_id: convId, user_id: invite.creator_id },
+    { conversation_id: convId, user_id: state.user.id }
   ])
-  await sb.from('invites').update({ accepted_by: state.user.id, conversation_id: conv.id }).eq('code', code)
+  await sb.from('invites').update({ accepted_by: state.user.id, conversation_id: convId }).eq('code', code)
 
   const { data: creatorProfile } = await sb.from('profiles').select('*').eq('id', invite.creator_id).single()
-  state.contacts[conv.id] = creatorProfile
+  state.contacts[convId] = creatorProfile
 
-  navigate(`/chat/${conv.id}`)
+  navigate(`/chat/${convId}`)
 }
 
 // ── Utilities ─────────────────────────────────────────────────────────────────
