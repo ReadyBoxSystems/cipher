@@ -490,12 +490,18 @@ async function showAcceptInvite(code) {
 
   // Generate ID client-side — avoids RLS blocking the SELECT before members are added
   const convId = crypto.randomUUID()
-  await sb.from('conversations').insert({ id: convId })
-  await sb.from('conversation_members').insert([
-    { conversation_id: convId, user_id: invite.creator_id },
-    { conversation_id: convId, user_id: state.user.id }
-  ])
-  await sb.from('invites').update({ accepted_by: state.user.id, conversation_id: convId }).eq('code', code)
+
+  const { error: e1 } = await sb.from('conversations').insert({ id: convId })
+  if (e1) { app.innerHTML = `<div class="screen"><div class="center-msg">Error creating conversation.<br>${e1.message}</div></div>`; return }
+
+  const { error: e2 } = await sb.from('conversation_members').insert({ conversation_id: convId, user_id: invite.creator_id })
+  if (e2) { app.innerHTML = `<div class="screen"><div class="center-msg">Error adding creator.<br>${e2.message}</div></div>`; return }
+
+  const { error: e3 } = await sb.from('conversation_members').insert({ conversation_id: convId, user_id: state.user.id })
+  if (e3) { app.innerHTML = `<div class="screen"><div class="center-msg">Error adding you.<br>${e3.message}</div></div>`; return }
+
+  const { error: e4 } = await sb.from('invites').update({ accepted_by: state.user.id, conversation_id: convId }).eq('code', code)
+  if (e4) { app.innerHTML = `<div class="screen"><div class="center-msg">Error updating invite.<br>${e4.message}</div></div>`; return }
 
   const { data: creatorProfile } = await sb.from('profiles').select('*').eq('id', invite.creator_id).single()
   state.contacts[convId] = creatorProfile
