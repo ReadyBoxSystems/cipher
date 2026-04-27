@@ -144,7 +144,7 @@ window._doSetup = async (e) => {
 }
 
 async function loadProfile() {
-  const { data } = await sb.from('profiles').select('*').eq('id', state.user.id).single()
+  const { data } = await sb.from('profiles').select('*').eq('id', state.user.id).maybeSingle()
   state.profile = data
 }
 
@@ -188,12 +188,12 @@ async function _loadConvs() {
     if (!state.contacts[c.id]) {
       const { data: others } = await sb.from('conversation_members').select('user_id').eq('conversation_id', c.id).neq('user_id', state.user.id)
       if (others?.[0]) {
-        const { data: p } = await sb.from('profiles').select('*').eq('id', others[0].user_id).single()
+        const { data: p } = await sb.from('profiles').select('*').eq('id', others[0].user_id).maybeSingle()
         state.contacts[c.id] = p
       }
     }
     // Last message
-    const { data: last } = await sb.from('messages').select('created_at').eq('conversation_id', c.id).order('created_at', { ascending: false }).limit(1).single()
+    const { data: last } = await sb.from('messages').select('created_at').eq('conversation_id', c.id).order('created_at', { ascending: false }).limit(1).maybeSingle()
     c._lastAt = last?.created_at
   }
 }
@@ -237,7 +237,7 @@ async function showChat(convId) {
   if (!state.contacts[convId]) {
     const { data: others } = await sb.from('conversation_members').select('user_id').eq('conversation_id', convId).neq('user_id', state.user.id)
     if (others?.[0]) {
-      const { data: p } = await sb.from('profiles').select('*').eq('id', others[0].user_id).single()
+      const { data: p } = await sb.from('profiles').select('*').eq('id', others[0].user_id).maybeSingle()
       state.contacts[convId] = p
     }
   }
@@ -434,7 +434,7 @@ function _scrollBottom() {
 async function showNewChat() {
   app.innerHTML = `<div class="screen"><div class="topbar"><button class="icon-btn" onclick="navigate('/')">←</button><div class="topbar-title">NEW CONVERSATION</div><div style="width:44px"></div></div><div class="center-msg">Creating invite link...</div></div>`
 
-  const { data, error } = await sb.from('invites').insert({ creator_id: state.user.id }).select().single()
+  const { data, error } = await sb.from('invites').insert({ creator_id: state.user.id }).select().maybeSingle()
   if (error) { alert('Could not create invite.'); navigate('/'); return }
 
   const url = `${location.origin}${location.pathname}#/invite/${data.code}`
@@ -466,7 +466,7 @@ window._copyLink = async (url) => {
 async function showAcceptInvite(code) {
   app.innerHTML = `<div class="screen"><div class="center-msg">Processing invite...</div></div>`
 
-  const { data: invite } = await sb.from('invites').select('*').eq('code', code).single()
+  const { data: invite } = await sb.from('invites').select('*').eq('code', code).maybeSingle()
 
   if (!invite || new Date(invite.expires_at) < new Date()) {
     app.innerHTML = `<div class="screen"><div class="center-msg">This invite is invalid or has expired.</div></div>`
@@ -503,7 +503,7 @@ async function showAcceptInvite(code) {
   const { error: e4 } = await sb.from('invites').update({ accepted_by: state.user.id, conversation_id: convId }).eq('code', code)
   if (e4) { app.innerHTML = `<div class="screen"><div class="center-msg">Error updating invite.<br>${e4.message}</div></div>`; return }
 
-  const { data: creatorProfile } = await sb.from('profiles').select('*').eq('id', invite.creator_id).single()
+  const { data: creatorProfile } = await sb.from('profiles').select('*').eq('id', invite.creator_id).maybeSingle()
   state.contacts[convId] = creatorProfile
 
   navigate(`/chat/${convId}`)
