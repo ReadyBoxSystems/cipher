@@ -19,18 +19,10 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 5: Tests** - Jest tests for all pure modules + mock-transport integration tests
 
 ## Phase Details
-
-### Phase 1: Foundation
-**Goal**: The codebase is decomposed into modules, all v0 bugs are fixed, the transport abstraction layer exists and is swappable, and Jest runs
-**Depends on**: Nothing (first phase)
-**Requirements**: FOUND-01, FOUND-02, FOUND-03, FOUND-04, FOUND-05, FOUND-06, FOUND-07, SEC-01, SEC-02, SEC-03, SEC-04
-**Success Criteria** (what must be TRUE):
-  1. `npm test` runs and Jest reports 0 failures (even with no test files yet — config is valid)
-  2. The app loads in the browser without console errors after the module restructure
-  3. `mock-transport.js` can be swapped in for `supabase-transport.js` by changing one import in `transport/index.js`
-  4. `crypto.js` encrypts and decrypts a long payload without hitting a V8 stack overflow
-  5. Sending a message with no key set does not silently encrypt with the fallback string `'cipher'`
-**Plans**: TBD
+**Plans**: 3 plans
+- [ ] 01-01-PLAN.md — Fix v0 bugs (crypto.js toB64, empty-key fallback, sw.js path) and stand up Jest ESM test harness
+- [ ] 01-02-PLAN.md — Transport abstraction layer (interface.js JSDoc, supabase-transport.js, mock-transport.js stubs, index.js swap point)
+- [ ] 01-03-PLAN.md — Module restructure: state/store.js, lib/{router,settings,utils}.js, ~30-line app.js boot file, screens/ placeholder
 
 ### Phase 2: Auth + Profile + Settings
 **Goal**: A user can create an account, set their @handle, view their profile, edit their display name, and sign out — and none of these flows produce `alert()` calls or 409 conflicts on stale sessions
