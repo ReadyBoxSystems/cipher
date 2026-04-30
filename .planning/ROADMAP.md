@@ -20,7 +20,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 ## Phase Details
 **Plans**: 3 plans
-- [ ] 01-01-PLAN.md — Fix v0 bugs (crypto.js toB64, empty-key fallback, sw.js path) and stand up Jest ESM test harness
+- [x] 01-01-PLAN.md — Fix v0 bugs (crypto.js toB64, empty-key fallback, sw.js path) and stand up Jest ESM test harness
 - [x] 01-02-PLAN.md — Transport abstraction layer (interface.js JSDoc, supabase-transport.js, mock-transport.js stubs, index.js swap point)
 - [ ] 01-03-PLAN.md — Module restructure: state/store.js, lib/{router,settings,utils}.js, ~30-line app.js boot file, screens/ placeholder
 
@@ -84,7 +84,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/TBD | Not started | - |
+| 1. Foundation | 2/3 | In Progress|  |
 | 2. Auth + Profile + Settings | 0/TBD | Not started | - |
 | 3. Core Messaging | 0/TBD | Not started | - |
 | 4. Invite Flow | 0/TBD | Not started | - |

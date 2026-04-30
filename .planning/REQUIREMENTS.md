@@ -12,11 +12,11 @@
 
 - [ ] **FOUND-01**: Codebase is decomposed from monolith into modules (`transport/`, `state/`, `lib/`, `screens/`)
 - [x] **FOUND-02**: Transport abstraction layer isolates all Supabase calls behind a 12-method interface
-- [ ] **FOUND-03**: `crypto.js` `toB64` uses a loop (not spread) to avoid V8 stack overflow on large buffers
-- [ ] **FOUND-04**: `crypto.js` removes the empty-key `|| 'cipher'` fallback — AES always uses a real key
-- [ ] **FOUND-05**: Service worker registers with `./sw.js` relative path and `scope: './'` for GitHub Pages
-- [ ] **FOUND-06**: Jest is configured for ES modules (`--experimental-vm-modules`, `transform: {}`, `testEnvironment: 'node'`)
-- [ ] **FOUND-07**: `package.json` has `"type": "module"` and a `test` script
+- [x] **FOUND-03**: `crypto.js` `toB64` uses a loop (not spread) to avoid V8 stack overflow on large buffers
+- [x] **FOUND-04**: `crypto.js` removes the empty-key `|| 'cipher'` fallback — AES always uses a real key
+- [x] **FOUND-05**: Service worker registers with `./sw.js` relative path and `scope: './'` for GitHub Pages
+- [x] **FOUND-06**: Jest is configured for ES modules (`--experimental-vm-modules`, `transform: {}`, `testEnvironment: 'node'`)
+- [x] **FOUND-07**: `package.json` has `"type": "module"` and a `test` script
 
 ### Authentication (AUTH)
 
@@ -70,10 +70,10 @@
 
 ### Encryption & Security (SEC)
 
-- [ ] **SEC-01**: All messages are AES-256-GCM encrypted before leaving the browser
-- [ ] **SEC-02**: PBKDF2 key derivation uses 100,000 iterations, SHA-256, per-message random salt
-- [ ] **SEC-03**: IV and salt are random per message; stored in Supabase alongside the encrypted payload
-- [ ] **SEC-04**: The AES passphrase is never sent to the server or stored outside the browser
+- [x] **SEC-01**: All messages are AES-256-GCM encrypted before leaving the browser
+- [x] **SEC-02**: PBKDF2 key derivation uses 100,000 iterations, SHA-256, per-message random salt
+- [x] **SEC-03**: IV and salt are random per message; stored in Supabase alongside the encrypted payload
+- [x] **SEC-04**: The AES passphrase is never sent to the server or stored outside the browser
 - [ ] **SEC-05**: Cipher type is never stored in the database — it is a secret second factor
 
 ### Testing (TEST)
@@ -114,15 +114,15 @@
 |-------------|-------|--------|
 | FOUND-01 | Phase 1: Foundation | Pending |
 | FOUND-02 | Phase 1: Foundation | Complete |
-| FOUND-03 | Phase 1: Foundation | Pending |
-| FOUND-04 | Phase 1: Foundation | Pending |
-| FOUND-05 | Phase 1: Foundation | Pending |
-| FOUND-06 | Phase 1: Foundation | Pending |
-| FOUND-07 | Phase 1: Foundation | Pending |
-| SEC-01 | Phase 1: Foundation | Pending |
-| SEC-02 | Phase 1: Foundation | Pending |
-| SEC-03 | Phase 1: Foundation | Pending |
-| SEC-04 | Phase 1: Foundation | Pending |
+| FOUND-03 | Phase 1: Foundation | Complete |
+| FOUND-04 | Phase 1: Foundation | Complete |
+| FOUND-05 | Phase 1: Foundation | Complete |
+| FOUND-06 | Phase 1: Foundation | Complete |
+| FOUND-07 | Phase 1: Foundation | Complete |
+| SEC-01 | Phase 1: Foundation | Complete |
+| SEC-02 | Phase 1: Foundation | Complete |
+| SEC-03 | Phase 1: Foundation | Complete |
+| SEC-04 | Phase 1: Foundation | Complete |
 | AUTH-01 | Phase 2: Auth + Profile + Settings | Pending |
 | AUTH-02 | Phase 2: Auth + Profile + Settings | Pending |
 | AUTH-03 | Phase 2: Auth + Profile + Settings | Pending |
