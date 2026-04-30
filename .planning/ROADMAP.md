@@ -12,7 +12,7 @@ A rebuild of a working v0 — the concept is proven, the architecture is not. Fi
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation** - Module skeleton, transport abstraction, v0 bug fixes, Jest config
+- [x] **Phase 1: Foundation** - Module skeleton, transport abstraction, v0 bug fixes, Jest config (completed 2026-04-30)
 - [ ] **Phase 2: Auth + Profile + Settings** - Auth screens, profile setup, settings screen
 - [ ] **Phase 3: Core Messaging** - Inbox, chat, realtime, card-flip decode UX
 - [ ] **Phase 4: Invite Flow** - Invite generation, landing screen, atomic invite acceptance
@@ -22,7 +22,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 3 plans
 - [x] 01-01-PLAN.md — Fix v0 bugs (crypto.js toB64, empty-key fallback, sw.js path) and stand up Jest ESM test harness
 - [x] 01-02-PLAN.md — Transport abstraction layer (interface.js JSDoc, supabase-transport.js, mock-transport.js stubs, index.js swap point)
-- [ ] 01-03-PLAN.md — Module restructure: state/store.js, lib/{router,settings,utils}.js, ~30-line app.js boot file, screens/ placeholder
+- [x] 01-03-PLAN.md — Module restructure: state/store.js, lib/{router,settings,utils}.js, ~30-line app.js boot file, screens/ placeholder
 
 ### Phase 2: Auth + Profile + Settings
 **Goal**: A user can create an account, set their @handle, view their profile, edit their display name, and sign out — and none of these flows produce `alert()` calls or 409 conflicts on stale sessions
@@ -84,7 +84,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 2/3 | In Progress|  |
+| 1. Foundation | 3/3 | Complete   | 2026-04-30 |
 | 2. Auth + Profile + Settings | 0/TBD | Not started | - |
 | 3. Core Messaging | 0/TBD | Not started | - |
 | 4. Invite Flow | 0/TBD | Not started | - |

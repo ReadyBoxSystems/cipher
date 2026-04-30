@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Completed 01-foundation-01-01-PLAN.md
-last_updated: "2026-04-30T22:10:27.294Z"
+status: verifying
+stopped_at: Completed 01-foundation-01-03-PLAN.md
+last_updated: "2026-04-30T22:15:54.030Z"
 last_activity: 2026-04-30
 progress:
   total_phases: 4
@@ -27,7 +27,7 @@ See: .planning/PROJECT.md (updated 2026-04-27)
 
 Phase: 01 (foundation) — EXECUTING
 Plan: 3 of 3
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-04-30
 
 Progress: [░░░░░░░░░░] 0%
@@ -54,6 +54,7 @@ Progress: [░░░░░░░░░░] 0%
 *Updated after each plan completion*
 | Phase 01-foundation P02 | 2 | 4 tasks | 4 files |
 | Phase 01-foundation P01 | 3 | 3 tasks | 7 files |
+| Phase 01-foundation P03 | 15 | 4 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -70,6 +71,8 @@ Recent decisions affecting current work:
 - [Phase 01-foundation]: Jest 30 extensionsToTreatAsEsm must be empty when type:module is set — .js ESM inference is automatic
 - [Phase 01-foundation]: npm test script uses node_modules/jest/bin/jest.js directly on Windows (Git Bash .bin shim incompatible)
 - [Phase 01-foundation]: decrypt passphrase guard sits outside try/catch — programmer error vs wrong-key event distinction preserved
+- [Phase 01-foundation]: pending_invite stored outside auth guard so unauthenticated invite URL visits always preserve the invite code (INVITE-05)
+- [Phase 01-foundation]: location.hash uses explicit '#/auth' prefix for mock-env compatibility; browsers normalize both forms identically
 
 ### Pending Todos
 
@@ -83,6 +86,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-30T22:10:27.291Z
-Stopped at: Completed 01-foundation-01-01-PLAN.md
+Last session: 2026-04-30T22:15:54.027Z
+Stopped at: Completed 01-foundation-01-03-PLAN.md
 Resume file: None

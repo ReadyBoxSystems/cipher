@@ -10,7 +10,7 @@
 
 ### Foundation (FOUND)
 
-- [ ] **FOUND-01**: Codebase is decomposed from monolith into modules (`transport/`, `state/`, `lib/`, `screens/`)
+- [x] **FOUND-01**: Codebase is decomposed from monolith into modules (`transport/`, `state/`, `lib/`, `screens/`)
 - [x] **FOUND-02**: Transport abstraction layer isolates all Supabase calls behind a 12-method interface
 - [x] **FOUND-03**: `crypto.js` `toB64` uses a loop (not spread) to avoid V8 stack overflow on large buffers
 - [x] **FOUND-04**: `crypto.js` removes the empty-key `|| 'cipher'` fallback — AES always uses a real key
@@ -112,7 +112,7 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FOUND-01 | Phase 1: Foundation | Pending |
+| FOUND-01 | Phase 1: Foundation | Complete |
 | FOUND-02 | Phase 1: Foundation | Complete |
 | FOUND-03 | Phase 1: Foundation | Complete |
 | FOUND-04 | Phase 1: Foundation | Complete |
