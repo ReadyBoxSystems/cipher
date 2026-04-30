@@ -2,12 +2,12 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: planning
-stopped_at: Phase 1 context gathered
-last_updated: "2026-04-27T22:17:15.223Z"
-last_activity: 2026-04-27 — Roadmap created, research complete, ready to begin Phase 1 planning
+status: executing
+stopped_at: Completed 01-foundation-02-PLAN.md
+last_updated: "2026-04-30T22:09:59.155Z"
+last_activity: 2026-04-30
 progress:
-  total_phases: 5
+  total_phases: 4
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-27)
 
 **Core value:** Two people can exchange messages genuinely unreadable to anyone else — including a fully-compromised server — using a pre-shared key and cipher agreed on out of band.
-**Current focus:** Phase 1 — Foundation
+**Current focus:** Phase 01 — foundation
 
 ## Current Position
 
-Phase: 1 of 5 (Foundation)
-Plan: 0 of TBD in current phase
-Status: Ready to plan
-Last activity: 2026-04-27 — Roadmap created, research complete, ready to begin Phase 1 planning
+Phase: 01 (foundation) — EXECUTING
+Plan: 2 of 3
+Status: Ready to execute
+Last activity: 2026-04-30
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -52,6 +52,7 @@ Progress: [░░░░░░░░░░] 0%
 - Trend: —
 
 *Updated after each plan completion*
+| Phase 01-foundation P02 | 2 | 4 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -63,6 +64,8 @@ Recent decisions affecting current work:
 - [Pre-Phase 1]: Transport abstraction — 12-method JS object interface; SupabaseTransport implements today, MeshTransport later
 - [Pre-Phase 1]: Card-flip decode UX — shows cipher text before decode; iOS Safari risk flagged, overlay fallback to be decided in Phase 3
 - [Pre-Phase 1]: Atomic invite acceptance — decide between Postgres security-definer function vs. client-side sequential inserts at Phase 4 start
+- [Phase 01-foundation]: transport/index.js uses aliased-import pattern so swapping Supabase to mock is a one-line edit
+- [Phase 01-foundation]: subscribeConversationMembers filters to user_id in Phase 1 (improvement over v0 unfiltered subscription)
 
 ### Pending Todos
 
@@ -76,6 +79,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-27T22:17:15.220Z
-Stopped at: Phase 1 context gathered
-Resume file: .planning/phases/01-foundation/01-CONTEXT.md
+Last session: 2026-04-30T22:09:59.151Z
+Stopped at: Completed 01-foundation-02-PLAN.md
+Resume file: None
