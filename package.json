@@ -1,0 +1,14 @@
+{
+  "name": "cipher",
+  "version": "1.0.0",
+  "description": "Two-layer encrypted messaging PWA (cipher + AES-256-GCM)",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --passWithNoTests"
+  },
+  "devDependencies": {
+    "jest": "^30.0.0",
+    "jest-environment-node": "^30.0.0"
+  }
+}
