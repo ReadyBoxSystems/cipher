@@ -1,5 +1,22 @@
-const CACHE = 'cipher-v1'
-const ASSETS = ['/cipher/', '/cipher/index.html', '/cipher/style.css', '/cipher/app.js', '/cipher/supabase.js', '/cipher/crypto.js', '/cipher/ciphers.js', '/cipher/manifest.json']
+const CACHE = 'cipher-v2'
+const ASSETS = [
+  './',
+  './index.html',
+  './style.css',
+  './manifest.json',
+  './app.js',
+  './supabase.js',
+  './crypto.js',
+  './ciphers.js',
+  './transport/index.js',
+  './transport/interface.js',
+  './transport/supabase-transport.js',
+  './transport/mock-transport.js',
+  './state/store.js',
+  './lib/router.js',
+  './lib/settings.js',
+  './lib/utils.js'
+]
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).catch(() => {}))
