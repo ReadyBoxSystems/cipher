@@ -12,7 +12,12 @@ Two people can exchange messages that are genuinely unreadable to anyone else �
 
 ### Validated
 
-(None yet — ship to validate)
+**Foundation (validated in Phase 1: Foundation)**
+- [x] `crypto.js` is bug-free: chunked `toB64`, passphrase guards on encrypt/decrypt, SEC contracts preserved
+- [x] `sw.js` uses `cipher-v2` cache key and relative asset paths
+- [x] Jest ESM harness runs: `npm test` exits 0 with 10 passing tests
+- [x] Transport abstraction layer complete: 17-method interface, Supabase impl, mock stubs, single swap point
+- [x] `app.js` monolith replaced: 32-line boot file + `state/`, `lib/`, `screens/` module skeleton
 
 ### Active
 
@@ -87,11 +92,11 @@ Two people can exchange messages that are genuinely unreadable to anyone else �
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
 | Card-flip decode UX | Shows cipher text before decode — reinforces the aesthetic, cipher text IS the experience | — Pending |
-| Transport abstraction layer | Separates Supabase from app logic; enables mesh swap in future milestone | — Pending |
+| Transport abstraction layer | Separates Supabase from app logic; enables mesh swap in future milestone | ✓ Built — Phase 1 |
 | Keep vanilla JS / no framework | GitHub Pages simplicity, no build tooling, consistent with prototype heritage | — Pending |
 | Cipher type not stored server-side | Intentional second factor — recipient must know it out of band | ✓ Good |
-| Jest for cipher/crypto testing | Pure functions with no DOM deps; Node 18+ has crypto.subtle; high value tests | — Pending |
-| Rebuild app.js as modules | Current monolith is untestable and hard to maintain | — Pending |
+| Jest for cipher/crypto testing | Pure functions with no DOM deps; Node 18+ has crypto.subtle; high value tests | ✓ Built — Phase 1 |
+| Rebuild app.js as modules | Current monolith is untestable and hard to maintain | ✓ Built — Phase 1 |
 
 ## Evolution
 
@@ -111,4 +116,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-27 after initialization*
+*Last updated: 2026-04-30 — Phase 1 (Foundation) complete*
