@@ -5,7 +5,13 @@ const enc = new TextEncoder()
 const dec = new TextDecoder()
 
 function toB64(buf) {
-  return btoa(String.fromCharCode(...new Uint8Array(buf)))
+  const bytes = new Uint8Array(buf)
+  let binary = ''
+  const CHUNK = 0x8000
+  for (let i = 0; i < bytes.length; i += CHUNK) {
+    binary += String.fromCharCode.apply(null, bytes.subarray(i, i + CHUNK))
+  }
+  return btoa(binary)
 }
 
 function fromB64(str) {
@@ -26,6 +32,9 @@ async function deriveKey(passphrase, salt) {
 }
 
 export async function encrypt(plaintext, passphrase) {
+  if (typeof passphrase !== 'string' || passphrase.length === 0) {
+    throw new Error('encrypt: passphrase is required (empty/missing passphrase rejected)')
+  }
   const salt = crypto.getRandomValues(new Uint8Array(16))
   const iv   = crypto.getRandomValues(new Uint8Array(12))
   const key  = await deriveKey(passphrase, salt)
@@ -39,6 +48,9 @@ export async function encrypt(plaintext, passphrase) {
 
 // Returns decrypted string, or null if the passphrase is wrong.
 export async function decrypt(payload, iv, salt, passphrase) {
+  if (typeof passphrase !== 'string' || passphrase.length === 0) {
+    throw new Error('decrypt: passphrase is required (empty/missing passphrase rejected)')
+  }
   try {
     const key = await deriveKey(passphrase, fromB64(salt))
     const buf = await crypto.subtle.decrypt(
