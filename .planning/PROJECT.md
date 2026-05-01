@@ -19,17 +19,18 @@ Two people can exchange messages that are genuinely unreadable to anyone else �
 - [x] Transport abstraction layer complete: 17-method interface, Supabase impl, mock stubs, single swap point
 - [x] `app.js` monolith replaced: 32-line boot file + `state/`, `lib/`, `screens/` module skeleton
 
+**Auth & Profile (validated in Phase 2: auth-profile-settings)**
+- [x] User can create an account with email and password
+- [x] User can sign in and stay signed in across sessions
+- [x] User can sign out from any screen
+- [x] User has a unique @handle chosen on first login
+- [x] User can change their display name in settings
+- [x] User can sign out from settings
+- [x] PROF-02 409 stale-session conflict bug fixed at transport layer (upsert over insert)
+
 ### Active
 
-**Authentication**
-- [ ] User can create an account with email and password
-- [ ] User can sign in and stay signed in across sessions
-- [ ] User can sign out from any screen
-
-**Profile & Settings**
-- [ ] User has a unique @handle chosen on first login
-- [ ] User can change their display name in settings
-- [ ] User can sign out from settings
+**Conversations**
 
 **Conversations**
 - [ ] User can generate a one-time invite link to start a conversation
@@ -116,4 +117,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-30 — Phase 1 (Foundation) complete*
+*Last updated: 2026-05-01 — Phase 2 (Auth & Profile) complete*
