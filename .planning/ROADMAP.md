@@ -13,7 +13,7 @@ A rebuild of a working v0 — the concept is proven, the architecture is not. Fi
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - Module skeleton, transport abstraction, v0 bug fixes, Jest config (completed 2026-04-30)
-- [ ] **Phase 2: Auth + Profile + Settings** - Auth screens, profile setup, settings screen
+- [x] **Phase 2: Auth + Profile + Settings** - Auth screens, profile setup, settings screen (completed 2026-05-01)
 - [ ] **Phase 3: Core Messaging** - Inbox, chat, realtime, card-flip decode UX
 - [ ] **Phase 4: Invite Flow** - Invite generation, landing screen, atomic invite acceptance
 - [ ] **Phase 5: Tests** - Jest tests for all pure modules + mock-transport integration tests
@@ -85,7 +85,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete   | 2026-04-30 |
-| 2. Auth + Profile + Settings | 1/3 | In Progress|  |
+| 2. Auth + Profile + Settings | 3/3 | Complete   | 2026-05-01 |
 | 3. Core Messaging | 0/TBD | Not started | - |
 | 4. Invite Flow | 0/TBD | Not started | - |
 | 5. Tests | 0/TBD | Not started | - |

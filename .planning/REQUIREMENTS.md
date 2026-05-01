@@ -20,16 +20,16 @@
 
 ### Authentication (AUTH)
 
-- [ ] **AUTH-01**: User can create an account with email and password
-- [ ] **AUTH-02**: User can sign in and remain signed in across sessions (Supabase session persistence)
+- [x] **AUTH-01**: User can create an account with email and password
+- [x] **AUTH-02**: User can sign in and remain signed in across sessions (Supabase session persistence)
 - [x] **AUTH-03**: User can sign out (accessible from Settings screen)
-- [ ] **AUTH-04**: Auth errors are shown inline — never `alert()`
+- [x] **AUTH-04**: Auth errors are shown inline — never `alert()`
 
 ### Profile & Setup (PROF)
 
-- [ ] **PROF-01**: First-time user is prompted to choose a unique @handle after sign-up
+- [x] **PROF-01**: First-time user is prompted to choose a unique @handle after sign-up
 - [x] **PROF-02**: Profile creation uses `upsert(onConflict: 'id')` — stale session does not cause 409 conflict
-- [ ] **PROF-03**: Handle-taken conflict (23505 on `username`) shows inline error; already-setup conflict (23505 on `id`) redirects to inbox
+- [x] **PROF-03**: Handle-taken conflict (23505 on `username`) shows inline error; already-setup conflict (23505 on `id`) redirects to inbox
 - [x] **PROF-04**: User can view their @handle and email on the Settings screen (read-only)
 - [x] **PROF-05**: User can edit their display name inline on the Settings screen (optimistic update)
 
@@ -123,13 +123,13 @@
 | SEC-02 | Phase 1: Foundation | Complete |
 | SEC-03 | Phase 1: Foundation | Complete |
 | SEC-04 | Phase 1: Foundation | Complete |
-| AUTH-01 | Phase 2: Auth + Profile + Settings | Pending |
-| AUTH-02 | Phase 2: Auth + Profile + Settings | Pending |
+| AUTH-01 | Phase 2: Auth + Profile + Settings | Complete |
+| AUTH-02 | Phase 2: Auth + Profile + Settings | Complete |
 | AUTH-03 | Phase 2: Auth + Profile + Settings | Complete |
-| AUTH-04 | Phase 2: Auth + Profile + Settings | Pending |
-| PROF-01 | Phase 2: Auth + Profile + Settings | Pending |
+| AUTH-04 | Phase 2: Auth + Profile + Settings | Complete |
+| PROF-01 | Phase 2: Auth + Profile + Settings | Complete |
 | PROF-02 | Phase 2: Auth + Profile + Settings | Complete |
-| PROF-03 | Phase 2: Auth + Profile + Settings | Pending |
+| PROF-03 | Phase 2: Auth + Profile + Settings | Complete |
 | PROF-04 | Phase 2: Auth + Profile + Settings | Complete |
 | PROF-05 | Phase 2: Auth + Profile + Settings | Complete |
 | INBOX-01 | Phase 3: Core Messaging | Pending |
