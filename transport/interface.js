@@ -29,7 +29,7 @@
  * @property {(userId: string) => Promise<{ result: object | null, error: Error | null }>} getProfile
  *   sb.from('profiles').select('*').eq('id', userId).maybeSingle().
  * @property {(userId: string, username: string, displayName: string) => Promise<{ result: object | null, error: Error | null }>} createProfile
- *   sb.from('profiles').insert({ id, username, display_name }). Phase 2 will switch to upsert.
+ *   sb.from('profiles').upsert({ id, username, display_name }). Uses upsert with onConflict:'id' to survive stale sessions (PROF-02).
  * @property {(userId: string, patch: object) => Promise<{ result: object | null, error: Error | null }>} updateProfile
  *   sb.from('profiles').update(patch).eq('id', userId). Used by PROF-05 in Phase 2.
  *

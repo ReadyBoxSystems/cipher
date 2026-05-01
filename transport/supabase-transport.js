@@ -36,9 +36,13 @@ export function createSupabaseTransport() {
       return { result: data ?? null, error: error ?? null }
     },
     async createProfile(userId, username, displayName) {
-      const { data, error } = await sb.from('profiles').insert({
-        id: userId, username, display_name: displayName
-      }).select().maybeSingle()
+      const { data, error } = await sb.from('profiles')
+        .upsert(
+          { id: userId, username, display_name: displayName },
+          { onConflict: 'id' }
+        )
+        .select()
+        .maybeSingle()
       return { result: data ?? null, error: error ?? null }
     },
     async updateProfile(userId, patch) {
