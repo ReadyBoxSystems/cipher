@@ -85,7 +85,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete   | 2026-04-30 |
-| 2. Auth + Profile + Settings | 0/TBD | Not started | - |
+| 2. Auth + Profile + Settings | 1/3 | In Progress|  |
 | 3. Core Messaging | 0/TBD | Not started | - |
 | 4. Invite Flow | 0/TBD | Not started | - |
 | 5. Tests | 0/TBD | Not started | - |

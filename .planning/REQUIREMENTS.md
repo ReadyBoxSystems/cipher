@@ -28,7 +28,7 @@
 ### Profile & Setup (PROF)
 
 - [ ] **PROF-01**: First-time user is prompted to choose a unique @handle after sign-up
-- [ ] **PROF-02**: Profile creation uses `upsert(onConflict: 'id')` — stale session does not cause 409 conflict
+- [x] **PROF-02**: Profile creation uses `upsert(onConflict: 'id')` — stale session does not cause 409 conflict
 - [ ] **PROF-03**: Handle-taken conflict (23505 on `username`) shows inline error; already-setup conflict (23505 on `id`) redirects to inbox
 - [ ] **PROF-04**: User can view their @handle and email on the Settings screen (read-only)
 - [ ] **PROF-05**: User can edit their display name inline on the Settings screen (optimistic update)
@@ -128,7 +128,7 @@
 | AUTH-03 | Phase 2: Auth + Profile + Settings | Pending |
 | AUTH-04 | Phase 2: Auth + Profile + Settings | Pending |
 | PROF-01 | Phase 2: Auth + Profile + Settings | Pending |
-| PROF-02 | Phase 2: Auth + Profile + Settings | Pending |
+| PROF-02 | Phase 2: Auth + Profile + Settings | Complete |
 | PROF-03 | Phase 2: Auth + Profile + Settings | Pending |
 | PROF-04 | Phase 2: Auth + Profile + Settings | Pending |
 | PROF-05 | Phase 2: Auth + Profile + Settings | Pending |
