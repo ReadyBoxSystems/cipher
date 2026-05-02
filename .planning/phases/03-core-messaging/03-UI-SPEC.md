@@ -37,17 +37,20 @@ Declared values (multiples of 4):
 |-------|-------|-------|
 | xs | 4px | Icon gaps (`.bubble-locked gap: 8px` halved for tight inline), checkbox gap |
 | sm | 8px | Compose meta/row gaps, decode panel row gaps, message list gap between bubbles |
-| md | 12–14px | Bubble padding (10px 13px), message list padding (14px), compose bar padding (10px 14px) |
-| lg | 16px | Conv-row padding horizontal, message list horizontal padding |
-| xl | 24px | — |
-| 2xl | 32px | Invite body padding, center-msg padding (40px) |
+| md | 16px | Conv-row padding horizontal, message list horizontal padding |
+| lg | 24px | — |
+| xl | 32px | Invite body padding, center-msg padding (40px) |
+| 2xl | 48px | — |
 | 3xl | 52px | Topbar height |
 
 Exceptions:
 - Touch targets: `.icon-btn` and `.avatar` are 44×44px — meets minimum tap target requirement (source: `style.css`)
 - `.send-btn` is 42×42px — acceptable, wraps in compose bar with natural tap clearance
 - Topbar height is 52px — not a multiple of 4, already established in Phase 2; do not change
-- Safe area bottom: `padding-bottom: max(10px, env(safe-area-inset-bottom))` on `.compose-bar` — keep as-is
+- Bubble padding is `10px 13px` — not multiples of 4; these are existing `style.css` values tuned for monospace character rhythm inside `.bubble`. Do not change.
+- Message list padding is 14px horizontal — not a multiple of 4; existing `style.css` value; do not change.
+- Compose bar padding is `10px 14px` — not multiples of 4; existing `style.css` values; do not change.
+- Safe area bottom: `padding-bottom: max(10px, env(safe-area-inset-bottom))` on `.compose-bar` — 10px base is a practical minimum for the safe-area expression, not a layout spacing token; keep as-is.
 
 Source: `style.css` measured values. Do not introduce new spacing values outside this scale.
 
@@ -55,19 +58,24 @@ Source: `style.css` measured values. Do not introduce new spacing values outside
 
 ## Typography
 
+Exactly 4 declared sizes for this phase:
+
 | Role | Size | Weight | Line Height | Letter Spacing | Usage |
 |------|------|--------|-------------|----------------|-------|
 | Body | 13px | 400 | 1.55 | 0.02em | Bubble text (`.bubble-text`), field inputs, compose input |
-| Label | 11px | 400 | 1.4 | 0.04–0.15em | Conv preview, lock label, button text, tab text, error messages, check label |
-| Meta | 10px | 400 | 1.4 | 0.04–0.06em | Conv time (10px), msg time (9px), logo-by (10px) |
-| Title | 12–13px | 400 | 1.4 | 0.04–0.5em | Conv name (12px), topbar title (11px + 0.3em tracking), setup title (15px) |
+| Label | 11px | 400 | 1.4 | 0.04–0.15em | Conv preview, lock label, button text, tab text, error messages, check label, "MORE" expand link |
+| Meta | 10px | 400 | 1.4 | 0.04–0.06em | Conv time, message timestamp, logo-by line |
+| Title | 12px | 400 | 1.4 | 0.04–0.5em | Conv name (12px), topbar title rendered at 11px + 0.3em tracking (falls within Title range) |
 
-All text uses `var(--font)` — JetBrains Mono monospace stack. Uppercase via `text-transform: uppercase` on interactive labels. Do not introduce a sans-serif or different font.
+Notes:
+- Message timestamps (`msg-time`) render at 10px — treated as the Meta token, not a separate declared size. 9px is not used; if `style.css` has 9px for msg-time, update to 10px for consistency.
+- The 15px setup screen title belongs to Phase 2's typography contract and is not declared here. Phase 3 does not render any setup screen elements.
+- All text uses `var(--font)` — JetBrains Mono monospace stack. Uppercase via `text-transform: uppercase` on interactive labels. Do not introduce a sans-serif or different font.
 
 Phase 3 specific:
-- Cipher-encoded text in bubbles: 13px, `var(--text)`, 1.55 line-height — same as body (the encoded glyphs, runes, Morse ARE the content)
-- "MORE" expand link: 11px, `var(--accent)`, `text-transform: uppercase`, `letter-spacing: 0.1em`
-- Inline error in compose bar: 11px, `var(--danger)`, same pattern as `.error-msg`
+- Cipher-encoded text in bubbles: 13px (Body token), `var(--text)`, 1.55 line-height — the encoded glyphs, runes, Morse ARE the content
+- "MORE" expand link: 11px (Label token), `var(--accent)`, `text-transform: uppercase`, `letter-spacing: 0.1em`
+- Inline error in compose bar: 11px (Label token), `var(--danger)`, same pattern as `.error-msg`
 
 Source: `style.css` measured values + CONTEXT.md D-05.
 
@@ -97,7 +105,7 @@ Source: `style.css` measured values + CONTEXT.md D-05.
 - Focus ring on field inputs: `border-color: rgba(212,168,67,0.4)` on `:focus`
 - Lock glyph color (`.lock-glyph`) — opacity 0.45
 - Cipher-encoded text visible in inbox preview row: NOT accented — stays `var(--text-dim)` to remain subtle
-- Decode button (`.btn-sm`) label text
+- "DECODE MESSAGE" button (`.btn-sm`) label text
 - "MORE" expand link text
 - Checkbox `accent-color`
 - Invite link text color
@@ -119,11 +127,13 @@ These are the markup structures the executor must emit. All CSS classes already 
 
 ### Inbox Screen (`.screen`)
 
+Primary focal point: `.inbox-list` — this is the main content region; all other elements are chrome around it.
+
 ```
 .topbar
   .topbar-title — "CIPHER"
   .topbar-actions
-    .icon-btn — "+" (navigates to #/new stub)
+    .icon-btn[aria-label="New conversation"] — "+" (navigates to #/new stub)
 
 .inbox-list
   .conv-row (×N, tappable → #/chat/:id)
@@ -138,11 +148,13 @@ These are the markup structures the executor must emit. All CSS classes already 
 
 ### Chat Screen (`.screen`)
 
+Primary focal point: `.messages-list` — this is the main content region; topbar and compose bar are persistent chrome.
+
 ```
 .topbar
   .topbar-title — @handle of contact
   .topbar-actions
-    .icon-btn — "←" back to inbox
+    .icon-btn[aria-label="Back to inbox"] — "←" back to inbox
 
 .messages-list
   .msg-wrap.mine / .msg-wrap.theirs (×N)
@@ -158,7 +170,7 @@ These are the markup structures the executor must emit. All CSS classes already 
   .panel-row
     .field-sm[type=select] — cipher type
     .field-sm[type=text] — key input
-    .btn-sm — "DECODE"
+    .btn-sm — "DECODE MESSAGE"
   .panel-row
     .check-label
       input[type=checkbox] — keep decoded toggle
@@ -171,8 +183,10 @@ These are the markup structures the executor must emit. All CSS classes already 
     .field-sm[as=input]  — key field
   .compose-row
     .compose-input[textarea] — message text
-    .send-btn — "→"
+    .send-btn[aria-label="Send message"] — "→"
 ```
+
+**Icon-only buttons require `aria-label`:** Any button or interactive element that renders only a glyph ("+", "←", "→") must carry an `aria-label` attribute as shown above. The label text must be plain English, not a symbol or code name.
 
 ### Card Flip / Overlay Fallback
 
@@ -216,7 +230,7 @@ Class `.pulse` added on message insert, removed after animation ends (`animation
 | Element | Copy |
 |---------|------|
 | Primary CTA — send | → (arrow glyph on `.send-btn`) |
-| Primary CTA — decode | DECODE |
+| Primary CTA — decode | DECODE MESSAGE |
 | Inbox empty state heading | NO MESSAGES YET |
 | Inbox empty state body | TAP + TO START A CONVERSATION |
 | Chat loading | LOADING... |
