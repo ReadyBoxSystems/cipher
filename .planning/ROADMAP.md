@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - Module skeleton, transport abstraction, v0 bug fixes, Jest config (completed 2026-04-30)
 - [x] **Phase 2: Auth + Profile + Settings** - Auth screens, profile setup, settings screen (completed 2026-05-01)
-- [ ] **Phase 3: Core Messaging** - Inbox, chat, realtime, card-flip decode UX
+- [x] **Phase 3: Core Messaging** - Inbox, chat, realtime, card-flip decode UX (completed 2026-05-02)
 - [ ] **Phase 4: Invite Flow** - Invite generation, landing screen, atomic invite acceptance
 - [ ] **Phase 5: Tests** - Jest tests for all pure modules + mock-transport integration tests
 
@@ -51,7 +51,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 3 plans
 - [x] 03-01-PLAN.md — Inbox screen + app.js boot wiring + chat.js stub (INBOX-01..05)
 - [x] 03-02-PLAN.md — Chat screen base: send (optimistic + AES + cipher), realtime receive, compose bar (CHAT-01..04, 12, SEC-05)
-- [ ] 03-03-PLAN.md — Decode UX: card-flip, MORE expand, keep-decoded, lock-pulse, overlay fallback (CHAT-05..11, 13)
+- [x] 03-03-PLAN.md — Decode UX: card-flip, MORE expand, keep-decoded, lock-pulse, overlay fallback (CHAT-05..11, 13)
 **UI hint**: yes
 
 ### Phase 4: Invite Flow
@@ -89,7 +89,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete   | 2026-04-30 |
 | 2. Auth + Profile + Settings | 3/3 | Complete   | 2026-05-01 |
-| 3. Core Messaging | 2/3 | In Progress|  |
+| 3. Core Messaging | 3/3 | Complete   | 2026-05-02 |
 | 4. Invite Flow | 0/TBD | Not started | - |
 | 5. Tests | 0/TBD | Not started | - |
 
@@ -99,7 +99,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 **Goal:** Create icon-192.png and icon-512.png using a static render of the cipher rotor/wheel UI with the C in the center. Currently 404ing from manifest.json — app works but shows generic browser icon on home screen install.
 **Requirements:** TBD
-**Plans:** 2/3 plans executed
+**Plans:** 3/3 plans complete
 
 Plans:
 - [ ] TBD (promote with /gsd:review-backlog when ready)
