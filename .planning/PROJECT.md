@@ -28,24 +28,25 @@ Two people can exchange messages that are genuinely unreadable to anyone else �
 - [x] User can sign out from settings
 - [x] PROF-02 409 stale-session conflict bug fixed at transport layer (upsert over insert)
 
-### Active
+**Core Messaging (validated in Phase 3: core-messaging)**
+- [x] User can see all their active conversations in the inbox (live-updating via realtime)
+- [x] Inbox shows contact handle, cipher-encoded preview, and relative timestamp
+- [x] User can send a message (cipher-encoded + AES-encrypted) with optimistic UI
+- [x] User can receive messages in real-time (deduplication via seenIds Set)
+- [x] Locked messages display the cipher-encoded text on the front of a card
+- [x] Tapping a locked message flips the card to reveal cipher/key entry
+- [x] User can decode a message by entering the cipher type and key
+- [x] User can enable "keep decoded for me" to auto-decode future messages in that conversation
+- [x] Cipher and key preferences are stored locally only, never sent to server (SEC-05)
+- [x] Card-flip decode UX with 3D CSS transform and overlay fallback for older devices
+- [x] Lock-pulse animation on incoming encrypted messages
 
-**Conversations**
+### Active
 
 **Conversations**
 - [ ] User can generate a one-time invite link to start a conversation
 - [ ] Recipient can open an invite link and join the conversation
 - [ ] Invite creator's inbox updates in real-time when their invite is accepted
-- [ ] User can see all their active conversations in the inbox
-
-**Messaging**
-- [ ] User can send a message (cipher-encoded + AES-encrypted)
-- [ ] User can receive messages in real-time
-- [ ] Locked messages display the cipher-encoded text on the front of a card
-- [ ] Tapping a locked message flips the card to reveal cipher/key entry
-- [ ] User can decode a message by entering the cipher type and key
-- [ ] User can enable "keep decoded for me" to auto-decode future messages in that conversation
-- [ ] Cipher and key preferences are stored locally only, never sent to server
 
 **Testing**
 - [ ] Cipher logic (all 7 ciphers) has Jest unit tests covering encode/decode round-trips
@@ -92,9 +93,9 @@ Two people can exchange messages that are genuinely unreadable to anyone else �
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Card-flip decode UX | Shows cipher text before decode — reinforces the aesthetic, cipher text IS the experience | — Pending |
+| Card-flip decode UX | Shows cipher text before decode — reinforces the aesthetic, cipher text IS the experience | ✓ Built — Phase 3 |
 | Transport abstraction layer | Separates Supabase from app logic; enables mesh swap in future milestone | ✓ Built — Phase 1 |
-| Keep vanilla JS / no framework | GitHub Pages simplicity, no build tooling, consistent with prototype heritage | — Pending |
+| Keep vanilla JS / no framework | GitHub Pages simplicity, no build tooling, consistent with prototype heritage | ✓ Validated — Phase 3 |
 | Cipher type not stored server-side | Intentional second factor — recipient must know it out of band | ✓ Good |
 | Jest for cipher/crypto testing | Pure functions with no DOM deps; Node 18+ has crypto.subtle; high value tests | ✓ Built — Phase 1 |
 | Rebuild app.js as modules | Current monolith is untestable and hard to maintain | ✓ Built — Phase 1 |
@@ -117,4 +118,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-01 — Phase 2 (Auth & Profile) complete*
+*Last updated: 2026-05-02 — Phase 3 (Core Messaging) complete*
