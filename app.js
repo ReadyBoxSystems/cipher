@@ -18,6 +18,8 @@ import * as router   from './lib/router.js'
 import './screens/auth.js'
 import './screens/setup.js'
 import './screens/settings.js'
+import './screens/inbox.js'
+import './screens/chat.js'
 
 // ── Service worker (D-09) ─────────────────────────────────────────────
 if ('serviceWorker' in navigator) {
