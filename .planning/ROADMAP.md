@@ -92,3 +92,14 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 3. Core Messaging | 0/TBD | Not started | - |
 | 4. Invite Flow | 0/TBD | Not started | - |
 | 5. Tests | 0/TBD | Not started | - |
+
+## Backlog
+
+### Phase 999.1: PWA Icons — Cipher Rotor Wheel (BACKLOG)
+
+**Goal:** Create icon-192.png and icon-512.png using a static render of the cipher rotor/wheel UI with the C in the center. Currently 404ing from manifest.json — app works but shows generic browser icon on home screen install.
+**Requirements:** TBD
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (promote with /gsd:review-backlog when ready)
