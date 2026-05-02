@@ -35,11 +35,11 @@
 
 ### Inbox (INBOX)
 
-- [ ] **INBOX-01**: User can see all their active conversations in the inbox, sorted by most recent activity
-- [ ] **INBOX-02**: Each conversation row shows the contact's @handle, avatar initial, and relative time of last message
-- [ ] **INBOX-03**: Inbox updates in real-time when a new message arrives in any conversation
-- [ ] **INBOX-04**: Inbox updates in real-time when someone accepts the user's invite (new conversation appears without refresh)
-- [ ] **INBOX-05**: Empty inbox shows actionable prompt to start a conversation
+- [x] **INBOX-01**: User can see all their active conversations in the inbox, sorted by most recent activity
+- [x] **INBOX-02**: Each conversation row shows the contact's @handle, avatar initial, and relative time of last message
+- [x] **INBOX-03**: Inbox updates in real-time when a new message arrives in any conversation
+- [x] **INBOX-04**: Inbox updates in real-time when someone accepts the user's invite (new conversation appears without refresh)
+- [x] **INBOX-05**: Empty inbox shows actionable prompt to start a conversation
 
 ### New Conversation & Invites (INVITE)
 
@@ -132,11 +132,11 @@
 | PROF-03 | Phase 2: Auth + Profile + Settings | Complete |
 | PROF-04 | Phase 2: Auth + Profile + Settings | Complete |
 | PROF-05 | Phase 2: Auth + Profile + Settings | Complete |
-| INBOX-01 | Phase 3: Core Messaging | Pending |
-| INBOX-02 | Phase 3: Core Messaging | Pending |
-| INBOX-03 | Phase 3: Core Messaging | Pending |
-| INBOX-04 | Phase 3: Core Messaging | Pending |
-| INBOX-05 | Phase 3: Core Messaging | Pending |
+| INBOX-01 | Phase 3: Core Messaging | Complete |
+| INBOX-02 | Phase 3: Core Messaging | Complete |
+| INBOX-03 | Phase 3: Core Messaging | Complete |
+| INBOX-04 | Phase 3: Core Messaging | Complete |
+| INBOX-05 | Phase 3: Core Messaging | Complete |
 | CHAT-01 | Phase 3: Core Messaging | Pending |
 | CHAT-02 | Phase 3: Core Messaging | Pending |
 | CHAT-03 | Phase 3: Core Messaging | Pending |

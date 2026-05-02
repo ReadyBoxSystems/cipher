@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: verifying
-stopped_at: Phase 3 UI-SPEC approved
-last_updated: "2026-05-02T13:26:22.410Z"
-last_activity: 2026-05-01
+status: executing
+stopped_at: Completed 03-01-PLAN.md (Inbox Screen)
+last_updated: "2026-05-02T23:18:35.451Z"
+last_activity: 2026-05-02
 progress:
-  total_phases: 4
+  total_phases: 5
   completed_phases: 1
-  total_plans: 3
-  completed_plans: 3
+  total_plans: 6
+  completed_plans: 4
   percent: 0
 ---
 
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-27)
 
 **Core value:** Two people can exchange messages genuinely unreadable to anyone else — including a fully-compromised server — using a pre-shared key and cipher agreed on out of band.
-**Current focus:** Phase 02 — auth-profile-settings
+**Current focus:** Phase 03 — core-messaging
 
 ## Current Position
 
-Phase: 3
-Plan: Not started
-Status: Phase complete — ready for verification
-Last activity: 2026-05-01
+Phase: 03 (core-messaging) — EXECUTING
+Plan: 2 of 3
+Status: Ready to execute
+Last activity: 2026-05-02
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -58,6 +58,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 02-auth-profile-settings P01 | 2 | 2 tasks | 6 files |
 | Phase 02-auth-profile-settings P03 | 4 | 1 tasks | 1 files |
 | Phase 02-auth-profile-settings P02 | 2 | 2 tasks | 2 files |
+| Phase 03-core-messaging P01 | 2 | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -82,6 +83,8 @@ Recent decisions affecting current work:
 - [Phase 02-auth-profile-settings]: Optimistic display-name edit: store updates before transport call, rolled back silently on error — no blocking spinner
 - [Phase 02-auth-profile-settings]: Button labels uppercased (SIGN IN, CREATE ACCOUNT, CONFIRM HANDLE) consistent with amber aesthetic
 - [Phase 02-auth-profile-settings]: Setup screen guard: if profile already in store, redirect to #/ (returning user landed on setup by mistake)
+- [Phase 03-core-messaging]: Inbox preview shows raw base64 payload substring (D-04): cannot decrypt server-side; CSS ellipsis handles overflow
+- [Phase 03-core-messaging]: Inbox owns both subscribeConversationMembers and per-conversation subscribeMessages (D-06); loadAndRender() helper shared between initial load and realtime refresh
 
 ### Pending Todos
 
@@ -95,6 +98,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-02T13:26:22.407Z
-Stopped at: Phase 3 UI-SPEC approved
-Resume file: .planning/phases/03-core-messaging/03-UI-SPEC.md
+Last session: 2026-05-02T23:18:35.448Z
+Stopped at: Completed 03-01-PLAN.md (Inbox Screen)
+Resume file: None

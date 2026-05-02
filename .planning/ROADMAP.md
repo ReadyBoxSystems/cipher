@@ -49,7 +49,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   5. With "Keep decoded for me" enabled, future messages in that conversation auto-decode on load with no flip element rendered
   6. Incoming message in an open conversation appears in real-time; inbox updates in real-time when a new message arrives in any conversation
 **Plans**: 3 plans
-- [ ] 03-01-PLAN.md — Inbox screen + app.js boot wiring + chat.js stub (INBOX-01..05)
+- [x] 03-01-PLAN.md — Inbox screen + app.js boot wiring + chat.js stub (INBOX-01..05)
 - [ ] 03-02-PLAN.md — Chat screen base: send (optimistic + AES + cipher), realtime receive, compose bar (CHAT-01..04, 12, SEC-05)
 - [ ] 03-03-PLAN.md — Decode UX: card-flip, MORE expand, keep-decoded, lock-pulse, overlay fallback (CHAT-05..11, 13)
 **UI hint**: yes
@@ -89,7 +89,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete   | 2026-04-30 |
 | 2. Auth + Profile + Settings | 3/3 | Complete   | 2026-05-01 |
-| 3. Core Messaging | 0/TBD | Not started | - |
+| 3. Core Messaging | 1/3 | In Progress|  |
 | 4. Invite Flow | 0/TBD | Not started | - |
 | 5. Tests | 0/TBD | Not started | - |
 
@@ -99,7 +99,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 **Goal:** Create icon-192.png and icon-512.png using a static render of the cipher rotor/wheel UI with the C in the center. Currently 404ing from manifest.json — app works but shows generic browser icon on home screen install.
 **Requirements:** TBD
-**Plans:** 0 plans
+**Plans:** 1/3 plans executed
 
 Plans:
 - [ ] TBD (promote with /gsd:review-backlog when ready)
