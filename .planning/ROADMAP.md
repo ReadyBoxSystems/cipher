@@ -48,7 +48,10 @@ Decimal phases appear between their surrounding integers in numeric order.
   4. User can enter cipher type and key on the card back to decode; wrong key shows an inline error, never an `alert()`
   5. With "Keep decoded for me" enabled, future messages in that conversation auto-decode on load with no flip element rendered
   6. Incoming message in an open conversation appears in real-time; inbox updates in real-time when a new message arrives in any conversation
-**Plans**: TBD
+**Plans**: 3 plans
+- [ ] 03-01-PLAN.md — Inbox screen + app.js boot wiring + chat.js stub (INBOX-01..05)
+- [ ] 03-02-PLAN.md — Chat screen base: send (optimistic + AES + cipher), realtime receive, compose bar (CHAT-01..04, 12, SEC-05)
+- [ ] 03-03-PLAN.md — Decode UX: card-flip, MORE expand, keep-decoded, lock-pulse, overlay fallback (CHAT-05..11, 13)
 **UI hint**: yes
 
 ### Phase 4: Invite Flow
