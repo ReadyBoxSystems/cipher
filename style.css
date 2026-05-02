@@ -509,3 +509,114 @@ html, body {
 }
 
 .accent { color: var(--accent); }
+
+/* ── Phase 3: Card flip ──────────────────────────────────── */
+
+.bubble.flippable {
+  position: relative;
+  perspective: 800px;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.bubble-card {
+  position: relative;
+  width: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.45s ease;
+}
+
+.bubble.flipped .bubble-card {
+  transform: rotateY(180deg);
+}
+
+.bubble-front,
+.bubble-back {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  padding: 10px 13px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.bubble.mine .bubble-front,
+.bubble.mine .bubble-back {
+  background: var(--accent-dim);
+  border-color: rgba(212,168,67,0.18);
+}
+
+.bubble-back {
+  position: absolute;
+  inset: 0;
+  transform: rotateY(180deg);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bubble-back .panel-row { gap: 6px; }
+.bubble-back .field-sm  { font-size: 11px; padding: 6px 8px; }
+.bubble-back .btn-sm    { padding: 6px 10px; }
+
+/* ── Phase 3: MORE expand on long encoded text ───────────── */
+
+.bubble-text.clipped {
+  max-height: calc(5 * 1.55 * 13px);
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+          mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+  transition: max-height 0.25s ease;
+}
+
+.bubble-text.expanded {
+  max-height: none;
+  -webkit-mask-image: none;
+          mask-image: none;
+}
+
+.bubble-more {
+  display: inline-block;
+  margin-top: 4px;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  text-transform: uppercase;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.bubble-more.hidden { display: none; }
+
+/* ── Phase 3: Lock pulse (CHAT-11) ───────────────────────── */
+
+@keyframes lock-pulse {
+  0%   { opacity: 0.45; }
+  50%  { opacity: 1; color: var(--accent-hi); }
+  100% { opacity: 0.45; }
+}
+
+.lock-glyph.pulse {
+  animation: lock-pulse 0.6s ease forwards;
+}
+
+/* ── Phase 3: Decode overlay fallback (D-02) ─────────────── */
+
+.decode-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(7,7,7,0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 24px;
+}
+
+.decode-overlay.hidden { display: none; }
+
+.decode-overlay .decode-panel {
+  width: 100%;
+  max-width: 420px;
+  border: 1px solid var(--border);
+}
