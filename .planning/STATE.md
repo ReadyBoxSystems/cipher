@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-01-PLAN.md (Inbox Screen)
-last_updated: "2026-05-02T23:18:35.451Z"
+stopped_at: Completed 03-02-PLAN.md (Chat Screen)
+last_updated: "2026-05-02T23:22:54.268Z"
 last_activity: 2026-05-02
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 6
-  completed_plans: 4
+  completed_plans: 5
   percent: 0
 ---
 
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-04-27)
 ## Current Position
 
 Phase: 03 (core-messaging) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 Status: Ready to execute
 Last activity: 2026-05-02
 
@@ -59,6 +59,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 02-auth-profile-settings P03 | 4 | 1 tasks | 1 files |
 | Phase 02-auth-profile-settings P02 | 2 | 2 tasks | 2 files |
 | Phase 03-core-messaging P01 | 2 | 3 tasks | 3 files |
+| Phase 03-core-messaging P02 | 3 | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -85,6 +86,8 @@ Recent decisions affecting current work:
 - [Phase 02-auth-profile-settings]: Setup screen guard: if profile already in store, redirect to #/ (returning user landed on setup by mistake)
 - [Phase 03-core-messaging]: Inbox preview shows raw base64 payload substring (D-04): cannot decrypt server-side; CSS ellipsis handles overflow
 - [Phase 03-core-messaging]: Inbox owns both subscribeConversationMembers and per-conversation subscribeMessages (D-06); loadAndRender() helper shared between initial load and realtime refresh
+- [Phase 03-core-messaging]: Own messages render captured plaintext (decoded map) — no re-decrypt needed for just-sent messages
+- [Phase 03-core-messaging]: seenIds Set initialized from initial fetch; realtime echo of own send is swallowed cleanly (D-07)
 
 ### Pending Todos
 
@@ -98,6 +101,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-02T23:18:35.448Z
-Stopped at: Completed 03-01-PLAN.md (Inbox Screen)
+Last session: 2026-05-02T23:22:54.265Z
+Stopped at: Completed 03-02-PLAN.md (Chat Screen)
 Resume file: None

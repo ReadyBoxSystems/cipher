@@ -54,10 +54,10 @@
 
 ### Chat & Messaging (CHAT)
 
-- [ ] **CHAT-01**: User can type and send a message (cipher-encoded + AES-256-GCM encrypted)
-- [ ] **CHAT-02**: Sent messages appear in the message list immediately (optimistic or via realtime)
-- [ ] **CHAT-03**: User receives messages in real-time when the chat screen is open
-- [ ] **CHAT-04**: Locked messages display the cipher-encoded text on the card front (Caesar shift, Morse dots, Futhark runes, etc.)
+- [x] **CHAT-01**: User can type and send a message (cipher-encoded + AES-256-GCM encrypted)
+- [x] **CHAT-02**: Sent messages appear in the message list immediately (optimistic or via realtime)
+- [x] **CHAT-03**: User receives messages in real-time when the chat screen is open
+- [x] **CHAT-04**: Locked messages display the cipher-encoded text on the card front (Caesar shift, Morse dots, Futhark runes, etc.)
 - [ ] **CHAT-05**: Tapping a locked message flips the card (CSS 3D flip, 0.45s) to reveal cipher/key entry on the back
 - [ ] **CHAT-06**: Only one card can be flipped at a time — tapping a second card flips the first back
 - [ ] **CHAT-07**: User can select cipher type and enter key on the card back to decode the message
@@ -65,7 +65,7 @@
 - [ ] **CHAT-09**: User can enable "Keep decoded for me" per conversation — stores cipher + key in localStorage only
 - [ ] **CHAT-10**: With "keep decoded" on, messages are auto-decoded on load and render as plain bubbles (no flip element)
 - [ ] **CHAT-11**: Incoming locked message plays one pulse animation on the lock glyph — not continuous
-- [ ] **CHAT-12**: Compose bar shows cipher selector and key field; send requires non-empty message text
+- [x] **CHAT-12**: Compose bar shows cipher selector and key field; send requires non-empty message text
 - [ ] **CHAT-13**: Cipher and key preferences are stored in localStorage only — never sent to server
 
 ### Encryption & Security (SEC)
@@ -74,7 +74,7 @@
 - [x] **SEC-02**: PBKDF2 key derivation uses 100,000 iterations, SHA-256, per-message random salt
 - [x] **SEC-03**: IV and salt are random per message; stored in Supabase alongside the encrypted payload
 - [x] **SEC-04**: The AES passphrase is never sent to the server or stored outside the browser
-- [ ] **SEC-05**: Cipher type is never stored in the database — it is a secret second factor
+- [x] **SEC-05**: Cipher type is never stored in the database — it is a secret second factor
 
 ### Testing (TEST)
 
@@ -137,10 +137,10 @@
 | INBOX-03 | Phase 3: Core Messaging | Complete |
 | INBOX-04 | Phase 3: Core Messaging | Complete |
 | INBOX-05 | Phase 3: Core Messaging | Complete |
-| CHAT-01 | Phase 3: Core Messaging | Pending |
-| CHAT-02 | Phase 3: Core Messaging | Pending |
-| CHAT-03 | Phase 3: Core Messaging | Pending |
-| CHAT-04 | Phase 3: Core Messaging | Pending |
+| CHAT-01 | Phase 3: Core Messaging | Complete |
+| CHAT-02 | Phase 3: Core Messaging | Complete |
+| CHAT-03 | Phase 3: Core Messaging | Complete |
+| CHAT-04 | Phase 3: Core Messaging | Complete |
 | CHAT-05 | Phase 3: Core Messaging | Pending |
 | CHAT-06 | Phase 3: Core Messaging | Pending |
 | CHAT-07 | Phase 3: Core Messaging | Pending |
@@ -148,9 +148,9 @@
 | CHAT-09 | Phase 3: Core Messaging | Pending |
 | CHAT-10 | Phase 3: Core Messaging | Pending |
 | CHAT-11 | Phase 3: Core Messaging | Pending |
-| CHAT-12 | Phase 3: Core Messaging | Pending |
+| CHAT-12 | Phase 3: Core Messaging | Complete |
 | CHAT-13 | Phase 3: Core Messaging | Pending |
-| SEC-05 | Phase 3: Core Messaging | Pending |
+| SEC-05 | Phase 3: Core Messaging | Complete |
 | INVITE-01 | Phase 4: Invite Flow | Pending |
 | INVITE-02 | Phase 4: Invite Flow | Pending |
 | INVITE-03 | Phase 4: Invite Flow | Pending |
