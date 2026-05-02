@@ -31,28 +31,37 @@ No shadcn gate required — this project is Vanilla JS, no React/Next/Vite.
 
 ## Spacing Scale
 
-Declared values (multiples of 4):
+### Spacing Tokens
+
+All values are multiples of 4. These are the binding contract for new layout decisions in Phase 3.
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| xs | 4px | Icon gaps (`.bubble-locked gap: 8px` halved for tight inline), checkbox gap |
+| xs | 4px | Icon gaps, checkbox gap |
 | sm | 8px | Compose meta/row gaps, decode panel row gaps, message list gap between bubbles |
-| md | 16px | Conv-row padding horizontal, message list horizontal padding |
-| lg | 24px | — |
-| xl | 32px | Invite body padding, center-msg padding (40px) |
-| 2xl | 48px | — |
+| md | 12px | General medium spacing |
+| lg | 16px | Conv-row padding horizontal, message list horizontal padding |
+| xl | 24px | — |
+| 2xl | 32px | Invite body padding |
 | 3xl | 52px | Topbar height |
 
-Exceptions:
-- Touch targets: `.icon-btn` and `.avatar` are 44×44px — meets minimum tap target requirement (source: `style.css`)
-- `.send-btn` is 42×42px — acceptable, wraps in compose bar with natural tap clearance
-- Topbar height is 52px — not a multiple of 4, already established in Phase 2; do not change
-- Bubble padding is `10px 13px` — not multiples of 4; these are existing `style.css` values tuned for monospace character rhythm inside `.bubble`. Do not change.
-- Message list padding is 14px horizontal — not a multiple of 4; existing `style.css` value; do not change.
-- Compose bar padding is `10px 14px` — not multiples of 4; existing `style.css` values; do not change.
-- Safe area bottom: `padding-bottom: max(10px, env(safe-area-inset-bottom))` on `.compose-bar` — 10px base is a practical minimum for the safe-area expression, not a layout spacing token; keep as-is.
+Do not introduce new spacing values outside this scale.
 
-Source: `style.css` measured values. Do not introduce new spacing values outside this scale.
+---
+
+> **Inherited CSS Measurements (not spacing tokens)**
+>
+> The following values exist in `style.css` from Phase 2 and are locked. They are not spacing tokens and are not subject to the multiples-of-4 rule. Do not change them.
+>
+> | Element | Value | Note |
+> |---------|-------|------|
+> | `.bubble` padding | `10px 13px` | Tuned for monospace character rhythm inside bubble — pre-existing `style.css` value from Phase 2 |
+> | `.messages-list` horizontal padding | `14px` | Pre-existing `style.css` value from Phase 2 |
+> | `.compose-bar` padding | `10px 14px` | Pre-existing `style.css` value from Phase 2 |
+> | `.send-btn` height | `42px` | Wraps inside compose bar with natural tap clearance — pre-existing `style.css` value from Phase 2 |
+> | `.compose-bar` safe-area base | `max(10px, env(safe-area-inset-bottom))` | 10px base is a practical minimum for the safe-area expression, not a layout spacing token — pre-existing `style.css` value from Phase 2 |
+
+Source: `style.css` measured values.
 
 ---
 
