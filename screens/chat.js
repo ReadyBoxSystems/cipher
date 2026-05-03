@@ -4,7 +4,7 @@ import * as router                               from '../lib/router.js'
 import { _ago, _esc }                            from '../lib/utils.js'
 import { getSettings, putSettings }              from '../lib/settings.js'
 import { encrypt, decrypt }                      from '../crypto.js'
-import { CIPHERS, CIPHER_LABELS, applyCipher }   from '../ciphers.js'
+import { CIPHERS, CIPHER_LABELS, CIPHER_USES_KEY, applyCipher } from '../ciphers.js'
 
 router.register('chat', async (convId) => {
   const app  = document.getElementById('app')
@@ -38,7 +38,10 @@ router.register('chat', async (convId) => {
           <select class="field-sm" id="compose-cipher">
             ${CIPHERS.map(c => `<option value="${c}"${c === prefs.cipher ? ' selected' : ''}>${_esc(CIPHER_LABELS[c])}</option>`).join('')}
           </select>
-          <input class="field-sm" id="compose-key" type="text" placeholder="key" value="${_esc(prefs.key)}" autocomplete="off" spellcheck="false" />
+          <input class="field-sm" id="compose-key" type="text"
+            placeholder="${CIPHER_USES_KEY[prefs.cipher] ? 'key' : 'enc. key'}"
+            value="${_esc(prefs.key)}" autocomplete="off" spellcheck="false"
+            ${CIPHER_USES_KEY[prefs.cipher] ? '' : 'style="opacity:0.5"'} />
         </div>
         <div class="compose-row">
           <textarea class="compose-input" id="compose-text" placeholder="message" rows="1"></textarea>
@@ -193,7 +196,10 @@ router.register('chat', async (convId) => {
     errEl.textContent = ''
 
     if (!text.trim()) return
-    if (!key) { errEl.textContent = 'KEY REQUIRED'; return }
+    if (!key) {
+      errEl.textContent = CIPHER_USES_KEY[cipher] ? 'KEY REQUIRED' : 'ENCRYPTION KEY REQUIRED'
+      return
+    }
 
     putSettings(convId, { cipher, key, keep: prefs.keep })
     prefs.cipher = cipher
@@ -332,14 +338,17 @@ router.register('chat', async (convId) => {
   function onCipherChange() {
     prefs.cipher = cipherEl.value
     putSettings(convId, { cipher: prefs.cipher, key: prefs.key, keep: prefs.keep })
+    // Update key field appearance for keyless ciphers
+    const usesKey = CIPHER_USES_KEY[prefs.cipher]
+    keyEl.placeholder = usesKey ? 'key' : 'enc. key'
+    keyEl.style.opacity = usesKey ? '' : '0.5'
     if (prefs.keep && prefs.key) reDecodeAll()
   }
 
   function onKeyChange() {
     prefs.key = keyEl.value
     putSettings(convId, { cipher: prefs.cipher, key: prefs.key, keep: prefs.keep })
-    // Clear and re-run AES layer when key changes
-    messages.forEach(m => { delete aesDecoded[m.id]; delete decoded[m.id] })
+    // Don't clear existing decodes — only try to decode messages not yet decoded
     if (prefs.keep && prefs.cipher && prefs.key) reDecodeAll()
     else aesDecodeAll()
   }
