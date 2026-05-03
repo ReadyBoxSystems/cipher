@@ -59,8 +59,9 @@ router.register('chat', async (convId) => {
 
   let messages         = []
   const seenIds        = new Set()
-  const decoded        = {}
-  let openPanelId      = null       // only one decode panel open at a time
+  const aesDecoded     = {}   // { [msgId]: cipher-text } — AES layer stripped, historical cipher still on
+  const decoded        = {}   // { [msgId]: plaintext }  — fully decoded
+  let openPanelId      = null
   const justArrivedIds = new Set()
 
   // ── Decode panel HTML (rendered below each locked bubble) ────────────
@@ -83,6 +84,17 @@ router.register('chat', async (convId) => {
         <div class="error-msg decode-err"></div>
       </div>
     `
+  }
+
+  // ── AES-only decrypt: reveals cipher text without applying historical cipher ──
+  async function aesDecodeAll() {
+    if (!prefs.key) return
+    await Promise.all(messages.map(async (m) => {
+      if (aesDecoded[m.id] || decoded[m.id]) return
+      const ct = await decrypt(m.payload, m.iv, m.salt, prefs.key)
+      if (ct !== null) aesDecoded[m.id] = ct
+    }))
+    renderMessages()
   }
 
   // ── Render ───────────────────────────────────────────────────────────
@@ -109,8 +121,8 @@ router.register('chat', async (convId) => {
         `
       }
 
-      // Locked bubble — shows AES payload as placeholder until decoded
-      const surface   = msg.payload.slice(0, 200)
+      // Locked bubble — shows cipher text if key entered, otherwise AES payload
+      const surface   = (aesDecoded[msg.id] || msg.payload).slice(0, 200)
       const needsClip = surface.length > 200 || (surface.match(/\n/g) || []).length > 5
 
       return `
@@ -145,7 +157,7 @@ router.register('chat', async (convId) => {
     if (!prefs.key) return
     await Promise.all(messages.map(async (m) => {
       const ct = await decrypt(m.payload, m.iv, m.salt, prefs.key)
-      if (ct !== null) decoded[m.id] = applyCipher(ct, prefs.cipher, prefs.key, false)
+      if (ct !== null) { aesDecoded[m.id] = ct; decoded[m.id] = applyCipher(ct, prefs.cipher, prefs.key, false) }
     }))
     renderMessages()
   }
@@ -160,10 +172,14 @@ router.register('chat', async (convId) => {
     store.set('messages', { ...(store.get('messages') || {}), [convId]: messages })
 
     if (prefs.keep && prefs.cipher && prefs.key) {
+      // Full auto-decode: AES + historical cipher
       await Promise.all(messages.map(async (m) => {
         const ct = await decrypt(m.payload, m.iv, m.salt, prefs.key)
-        if (ct !== null) decoded[m.id] = applyCipher(ct, prefs.cipher, prefs.key, false)
+        if (ct !== null) { aesDecoded[m.id] = ct; decoded[m.id] = applyCipher(ct, prefs.cipher, prefs.key, false) }
       }))
+    } else if (prefs.key) {
+      // Key known but cipher not set or keep=false — show cipher text layer only
+      await aesDecodeAll()
     }
 
     renderMessages()
@@ -228,9 +244,12 @@ router.register('chat', async (convId) => {
     messages.push(msg)
     justArrivedIds.add(msg.id)
 
-    if (prefs.keep && prefs.cipher && prefs.key) {
+    if (prefs.key) {
       const ct = await decrypt(msg.payload, msg.iv, msg.salt, prefs.key)
-      if (ct !== null) decoded[msg.id] = applyCipher(ct, prefs.cipher, prefs.key, false)
+      if (ct !== null) {
+        aesDecoded[msg.id] = ct
+        if (prefs.keep && prefs.cipher) decoded[msg.id] = applyCipher(ct, prefs.cipher, prefs.key, false)
+      }
     }
 
     renderMessages()
@@ -269,8 +288,9 @@ router.register('chat', async (convId) => {
       if (!m) return
       const cipherText = await decrypt(m.payload, m.iv, m.salt, key)
       if (cipherText === null) { errOut.textContent = 'WRONG KEY — CHECK CIPHER AND KEY'; return }
-      const plaintext = applyCipher(cipherText, cipher, key, false)
-      decoded[msgId] = plaintext
+      aesDecoded[msgId] = cipherText
+      const plaintext   = applyCipher(cipherText, cipher, key, false)
+      decoded[msgId]    = plaintext
       putSettings(convId, { cipher, key, keep: keepIn.checked })
       prefs.cipher = cipher
       prefs.key    = key
@@ -280,7 +300,7 @@ router.register('chat', async (convId) => {
         await Promise.all(messages.map(async (mm) => {
           if (decoded[mm.id]) return
           const ct = await decrypt(mm.payload, mm.iv, mm.salt, key)
-          if (ct !== null) decoded[mm.id] = applyCipher(ct, cipher, key, false)
+          if (ct !== null) { aesDecoded[mm.id] = ct; decoded[mm.id] = applyCipher(ct, cipher, key, false) }
         }))
       }
       renderMessages()
@@ -318,6 +338,10 @@ router.register('chat', async (convId) => {
   function onKeyChange() {
     prefs.key = keyEl.value
     putSettings(convId, { cipher: prefs.cipher, key: prefs.key, keep: prefs.keep })
+    // Clear and re-run AES layer when key changes
+    messages.forEach(m => { delete aesDecoded[m.id]; delete decoded[m.id] })
+    if (prefs.keep && prefs.cipher && prefs.key) reDecodeAll()
+    else aesDecodeAll()
   }
 
   back.addEventListener('click', onBack)
