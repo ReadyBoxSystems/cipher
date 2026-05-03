@@ -96,10 +96,9 @@ router.register('chat', async (convId) => {
       const mine      = msg.sender_id === user.id
       const isDecoded = msg.id in decoded
       const isPulse   = justArrivedIds.has(msg.id)
-      const isOpen    = openPanelId === msg.id
 
-      // Plain decoded bubble — no panel needed
-      if (prefs.keep && isDecoded) {
+      // Once decoded (this session or auto-decoded via keep), show plaintext — no lock
+      if (isDecoded) {
         return `
           <div class="msg-wrap ${mine ? 'mine' : 'theirs'}">
             <div class="bubble ${mine ? 'mine' : 'theirs'}">
@@ -110,16 +109,8 @@ router.register('chat', async (convId) => {
         `
       }
 
-      // Surface text shown on the locked bubble face
-      let surface
-      if (isDecoded && prefs.cipher && prefs.key) {
-        surface = applyCipher(decoded[msg.id], prefs.cipher, prefs.key, true)
-      } else if (isDecoded) {
-        surface = decoded[msg.id]
-      } else {
-        surface = msg.payload.slice(0, 200)
-      }
-
+      // Locked bubble — shows AES payload as placeholder until decoded
+      const surface   = msg.payload.slice(0, 200)
       const needsClip = surface.length > 200 || (surface.match(/\n/g) || []).length > 5
 
       return `
