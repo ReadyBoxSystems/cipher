@@ -66,7 +66,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   4. Theme preference persists across sessions and devices (stored in Supabase profile)
   5. Postdesk theme: warm parchment palette, serif + typewriter typography, letter-card aesthetic
   6. Terminal theme: existing dark amber aesthetic, unchanged
-**Plans**: TBD
+**Plans**: 4 plans
+- [ ] 04-01-PLAN.md — CSS foundation: port settings CSS, add --font-display token, Postdesk overrides, swatch CSS, REQUIREMENTS.md entries
+- [ ] 04-02-PLAN.md — Boot infrastructure: Google Fonts in index.html, SW caching, app.js boot-time theme apply + cross-device sync, schema.sql migration doc
+- [ ] 04-03-PLAN.md — Inbox topbar avatar button (PROF-06) navigates to #/settings
+- [ ] 04-04-PLAN.md — Settings APPEARANCE section + theme switch handler + tests/theme.test.js (depends on 01 + 02)
 **UI hint**: yes
 
 ### Phase 5: Invite Flow
