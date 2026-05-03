@@ -1,23 +1,3 @@
-// Chat screen — #/chat/:convId — full message thread.
-// Plan 02 replaces the Plan 01 stub with:
-//   - Message list fetch + render (mine right, theirs left)
-//   - Optimistic send: cipher-encode → AES-encrypt → append locally → transport.sendMessage
-//   - Rollback on transport failure
-//   - Realtime subscription (D-06) with dedupe by message id (D-07)
-//   - Two-row compose bar: cipher selector + key field / textarea + send button
-//   - Per-conversation settings persisted via lib/settings (SEC-05 — never sent to server)
-//
-// Plan 03 layers on: decode UX (card flip), MORE expand, auto-decode toggle, animations.
-//   - CHAT-05: card-flip (CSS 3D, 0.45s) reveals decode form on card back
-//   - CHAT-06: only one card flipped at a time — second tap flips first back
-//   - CHAT-07: cipher type + key entry on card back → DECODE MESSAGE
-//   - CHAT-08: wrong key → inline WRONG KEY — CHECK CIPHER AND KEY error (never alert())
-//   - CHAT-09: KEEP DECODED FOR ME checkbox persists prefs in localStorage
-//   - CHAT-10: auto-decode on load + incoming when keep=true; no flip element rendered
-//   - CHAT-11: one-shot lock-pulse animation on incoming message lock glyph
-//   - CHAT-13: cipher prefs stored ONLY in localStorage via lib/settings — never sent to server
-//   - D-02:    progressive fallback overlay if 3D transforms unsupported
-
 import { transport }                             from '../transport/index.js'
 import * as store                                from '../state/store.js'
 import * as router                               from '../lib/router.js'
@@ -30,25 +10,15 @@ router.register('chat', async (convId) => {
   const app  = document.getElementById('app')
   const user = store.get('user')
 
-  // ── Guards ───────────────────────────────────────────────────────────
   if (!user)                 { router.navigate('#/auth');  return () => {} }
   if (!store.get('profile')) { router.navigate('#/setup'); return () => {} }
   if (!convId)               { router.navigate('#/');      return () => {} }
 
-  // ── Fetch the contact (the OTHER person in this conversation) ────────
   const { result: contact, error: contactErr } = await transport.getConversationContact(convId, user.id)
-  if (contactErr || !contact) {
-    router.navigate('#/')
-    return () => {}
-  }
+  if (contactErr || !contact) { router.navigate('#/'); return () => {} }
 
-  // ── Read persisted per-conversation prefs (cipher + key) ─────────────
   const prefs = getSettings(convId)
 
-  // ── 3D flip support detection (D-02: progressive fallback) ───────────
-  const supports3D = (typeof CSS !== 'undefined' && CSS.supports && CSS.supports('transform-style', 'preserve-3d'))
-
-  // ── Render screen shell ───────────────────────────────────────────────
   app.innerHTML = `
     <div class="screen">
       <div class="topbar">
@@ -76,78 +46,46 @@ router.register('chat', async (convId) => {
         </div>
         <div class="error-msg" id="compose-error" style="margin-top:6px"></div>
       </div>
-
-      <div class="decode-overlay hidden" id="decode-overlay-mount"></div>
     </div>
   `
 
-  // ── DOM refs (wired after innerHTML set) ─────────────────────────────
-  const listEl      = app.querySelector('#messages-list')
-  const textEl      = app.querySelector('#compose-text')
-  const keyEl       = app.querySelector('#compose-key')
-  const cipherEl    = app.querySelector('#compose-cipher')
-  const sendBtn     = app.querySelector('#compose-send')
-  const errEl       = app.querySelector('#compose-error')
-  const back        = app.querySelector('#chat-back')
-  const overlayEl   = app.querySelector('#decode-overlay-mount')
+  const listEl   = app.querySelector('#messages-list')
+  const textEl   = app.querySelector('#compose-text')
+  const keyEl    = app.querySelector('#compose-key')
+  const cipherEl = app.querySelector('#compose-cipher')
+  const sendBtn  = app.querySelector('#compose-send')
+  const errEl    = app.querySelector('#compose-error')
+  const back     = app.querySelector('#chat-back')
 
-  // ── Local state ───────────────────────────────────────────────────────
-  let messages           = []          // ordered list of message rows
-  const seenIds          = new Set()   // realtime dedupe — all message ids we know about
-  const decoded          = {}          // { [msgId]: plaintext }
-  let openFlippedId      = null        // tracks the single flipped bubble (CHAT-06)
-  const justArrivedIds   = new Set()   // ids to render with .pulse this pass (CHAT-11)
+  let messages         = []
+  const seenIds        = new Set()
+  const decoded        = {}
+  let openPanelId      = null       // only one decode panel open at a time
+  const justArrivedIds = new Set()
 
-  // ── Helper: build the card-flip bubble HTML ───────────────────────────
-  function _buildFlippableBubble(msg, mine, surface, needsClip) {
-    const isPulse = justArrivedIds.has(msg.id)
+  // ── Decode panel HTML (rendered below each locked bubble) ────────────
+  function _decodePanel(msgId) {
     return `
-      <div class="msg-wrap ${mine ? 'mine' : 'theirs'}">
-        <div class="bubble ${mine ? 'mine' : 'theirs'} flippable${openFlippedId === msg.id ? ' flipped' : ''}" data-msg-id="${msg.id}">
-          <div class="bubble-card">
-            <div class="bubble-front">
-              <span class="lock-glyph${isPulse ? ' pulse' : ''}">⚿</span>
-              <div class="bubble-text${needsClip ? ' clipped' : ''}">${_esc(surface)}</div>
-              ${needsClip ? '<span class="bubble-more">MORE</span>' : ''}
-            </div>
-            <div class="bubble-back">
-              <div class="panel-row">
-                <select class="field-sm decode-cipher">
-                  ${CIPHERS.map(c => `<option value="${c}"${c === prefs.cipher ? ' selected' : ''}>${_esc(CIPHER_LABELS[c])}</option>`).join('')}
-                </select>
-                <input class="field-sm decode-key" type="text" placeholder="key" value="${_esc(prefs.key)}" />
-              </div>
-              <div class="panel-row">
-                <button class="btn-sm decode-go" type="button">DECODE MESSAGE</button>
-                <label class="check-label">
-                  <input type="checkbox" class="decode-keep"${prefs.keep ? ' checked' : ''} />
-                  KEEP DECODED FOR ME
-                </label>
-              </div>
-              <div class="error-msg decode-err"></div>
-            </div>
-          </div>
+      <div class="decode-panel-inline" id="dp-${msgId}">
+        <div class="panel-row">
+          <select class="field-sm decode-cipher">
+            ${CIPHERS.map(c => `<option value="${c}"${c === prefs.cipher ? ' selected' : ''}>${_esc(CIPHER_LABELS[c])}</option>`).join('')}
+          </select>
+          <input class="field-sm decode-key" type="text" placeholder="key" value="${_esc(prefs.key)}" />
         </div>
-        <div class="msg-time">${_ago(msg.created_at)}</div>
+        <div class="panel-row">
+          <button class="btn-sm decode-go" type="button" data-msg-id="${msgId}">DECODE MESSAGE</button>
+          <label class="check-label">
+            <input type="checkbox" class="decode-keep"${prefs.keep ? ' checked' : ''} />
+            KEEP DECODED FOR ME
+          </label>
+        </div>
+        <div class="error-msg decode-err"></div>
       </div>
     `
   }
 
-  // ── Helper: build the fallback (no-3D) bubble HTML ───────────────────
-  function _buildFallbackBubble(msg, mine, surface, needsClip) {
-    return `
-      <div class="msg-wrap ${mine ? 'mine' : 'theirs'}">
-        <div class="bubble ${mine ? 'mine' : 'theirs'}" data-msg-id="${msg.id}">
-          <div class="bubble-text${needsClip ? ' clipped' : ''}">${_esc(surface)}</div>
-          ${needsClip ? '<span class="bubble-more">MORE</span>' : ''}
-          <button class="icon-btn lock-icon" type="button" aria-label="Decode message" data-msg-id="${msg.id}">⚿</button>
-        </div>
-        <div class="msg-time">${_ago(msg.created_at)}</div>
-      </div>
-    `
-  }
-
-  // ── Helper: render the message list ──────────────────────────────────
+  // ── Render ───────────────────────────────────────────────────────────
   function renderMessages() {
     if (messages.length === 0) {
       listEl.innerHTML = '<div class="center-msg">NO MESSAGES YET</div>'
@@ -157,8 +95,10 @@ router.register('chat', async (convId) => {
     listEl.innerHTML = messages.map(msg => {
       const mine      = msg.sender_id === user.id
       const isDecoded = msg.id in decoded
+      const isPulse   = justArrivedIds.has(msg.id)
+      const isOpen    = openPanelId === msg.id
 
-      // CHAT-10: if keep=true and we have plaintext, render plain bubble — no flip element
+      // Plain decoded bubble — no panel needed
       if (prefs.keep && isDecoded) {
         return `
           <div class="msg-wrap ${mine ? 'mine' : 'theirs'}">
@@ -170,10 +110,7 @@ router.register('chat', async (convId) => {
         `
       }
 
-      // Locked bubble — determine surface text
-      // If we have plaintext (e.g. just-sent own message, or decoded-and-flipped-back),
-      // re-encode it to display the cipher text on the front face.
-      // Otherwise fall back to the AES base64 payload slice as a visual placeholder.
+      // Surface text shown on the locked bubble face
       let surface
       if (isDecoded && prefs.cipher && prefs.key) {
         surface = applyCipher(decoded[msg.id], prefs.cipher, prefs.key, true)
@@ -183,82 +120,43 @@ router.register('chat', async (convId) => {
         surface = msg.payload.slice(0, 200)
       }
 
-      // MORE expand: clip if > 200 chars or > 5 newlines in the surface
       const needsClip = surface.length > 200 || (surface.match(/\n/g) || []).length > 5
 
-      if (supports3D) {
-        return _buildFlippableBubble(msg, mine, surface, needsClip)
-      } else {
-        return _buildFallbackBubble(msg, mine, surface, needsClip)
-      }
+      return `
+        <div class="msg-wrap ${mine ? 'mine' : 'theirs'}">
+          <div class="bubble ${mine ? 'mine' : 'theirs'}" data-msg-id="${msg.id}" style="cursor:pointer">
+            <span class="lock-glyph${isPulse ? ' pulse' : ''}">⚿</span>
+            <div class="bubble-text${needsClip ? ' clipped' : ''}">${_esc(surface)}</div>
+            ${needsClip ? '<span class="bubble-more">MORE</span>' : ''}
+          </div>
+          ${_decodePanel(msg.id)}
+          <div class="msg-time">${_ago(msg.created_at)}</div>
+        </div>
+      `
     }).join('')
 
-    // Wire animationend on .pulse glyphs to remove class (CHAT-11 belt-and-suspenders)
+    // Re-open the panel that was open before re-render
+    if (openPanelId) {
+      const panel = document.getElementById('dp-' + openPanelId)
+      if (panel) panel.classList.add('open')
+    }
+
+    // Wire animationend on pulse glyphs to remove class
     listEl.querySelectorAll('.lock-glyph.pulse').forEach(el => {
       el.addEventListener('animationend', () => el.classList.remove('pulse'), { once: true })
     })
 
-    // Always scroll to the newest message.
     listEl.scrollTop = listEl.scrollHeight
   }
 
-  // ── Overlay fallback helpers (D-02) ──────────────────────────────────
-  function openOverlay(msgId) {
-    const m = messages.find(x => x.id === msgId)
-    if (!m) return
-    overlayEl.classList.remove('hidden')
-    overlayEl.innerHTML = `
-      <div class="decode-panel">
-        <div class="panel-row">
-          <select class="field-sm decode-cipher">
-            ${CIPHERS.map(c => `<option value="${c}"${c === prefs.cipher ? ' selected' : ''}>${_esc(CIPHER_LABELS[c])}</option>`).join('')}
-          </select>
-          <input class="field-sm decode-key" type="text" placeholder="key" value="${_esc(prefs.key)}" />
-        </div>
-        <div class="panel-row">
-          <button class="btn-sm decode-go-overlay" type="button">DECODE MESSAGE</button>
-          <label class="check-label">
-            <input type="checkbox" class="decode-keep"${prefs.keep ? ' checked' : ''} />
-            KEEP DECODED FOR ME
-          </label>
-        </div>
-        <div class="error-msg decode-err"></div>
-      </div>
-    `
-
-    const panel     = overlayEl.querySelector('.decode-panel')
-    const cipherSel = overlayEl.querySelector('.decode-cipher')
-    const keyIn     = overlayEl.querySelector('.decode-key')
-    const keepIn    = overlayEl.querySelector('.decode-keep')
-    const errOut    = overlayEl.querySelector('.decode-err')
-    const goBtn     = overlayEl.querySelector('.decode-go-overlay')
-
-    goBtn.addEventListener('click', async () => {
-      const cipher = cipherSel.value
-      const key    = keyIn.value
-      errOut.textContent = ''
-      if (!key) { errOut.textContent = 'KEY REQUIRED'; return }
-      const cipherText = await decrypt(m.payload, m.iv, m.salt, key)
-      if (cipherText === null) { errOut.textContent = 'WRONG KEY — CHECK CIPHER AND KEY'; return }
-      const plaintext = applyCipher(cipherText, cipher, key, false)
-      decoded[msgId] = plaintext
-      putSettings(convId, { cipher, key, keep: keepIn.checked })
-      prefs.cipher = cipher; prefs.key = key; prefs.keep = keepIn.checked
-      if (prefs.keep) {
-        await Promise.all(messages.map(async (mm) => {
-          if (decoded[mm.id]) return
-          const ct = await decrypt(mm.payload, mm.iv, mm.salt, key)
-          if (ct !== null) decoded[mm.id] = applyCipher(ct, cipher, key, false)
-        }))
-      }
-      overlayEl.classList.add('hidden')
-      renderMessages()
-    })
-
-    // Close overlay by tapping the scrim (outside the panel)
-    overlayEl.addEventListener('click', (e) => {
-      if (!panel.contains(e.target)) overlayEl.classList.add('hidden')
-    }, { once: true })
+  // ── Re-decode all messages with current prefs ────────────────────────
+  async function reDecodeAll() {
+    if (!prefs.key) return
+    await Promise.all(messages.map(async (m) => {
+      const ct = await decrypt(m.payload, m.iv, m.salt, prefs.key)
+      if (ct !== null) decoded[m.id] = applyCipher(ct, prefs.cipher, prefs.key, false)
+    }))
+    renderMessages()
   }
 
   // ── Initial fetch ─────────────────────────────────────────────────────
@@ -268,17 +166,12 @@ router.register('chat', async (convId) => {
   } else {
     messages = msgs || []
     messages.forEach(m => seenIds.add(m.id))
-    // Merge into global store so inbox preview can reference without re-fetching.
     store.set('messages', { ...(store.get('messages') || {}), [convId]: messages })
 
-    // CHAT-10: auto-decode all messages on load if keep=true
     if (prefs.keep && prefs.cipher && prefs.key) {
       await Promise.all(messages.map(async (m) => {
-        if (decoded[m.id]) return
-        const cipherText = await decrypt(m.payload, m.iv, m.salt, prefs.key)
-        if (cipherText !== null) {
-          decoded[m.id] = applyCipher(cipherText, prefs.cipher, prefs.key, false)
-        }
+        const ct = await decrypt(m.payload, m.iv, m.salt, prefs.key)
+        if (ct !== null) decoded[m.id] = applyCipher(ct, prefs.cipher, prefs.key, false)
       }))
     }
 
@@ -292,14 +185,13 @@ router.register('chat', async (convId) => {
     const cipher = cipherEl.value
     errEl.textContent = ''
 
-    // Client-side validation (CHAT-12).
-    if (!text.trim()) { return }                              // silent no-op on empty text
-    if (!key)         { errEl.textContent = 'KEY REQUIRED'; return }
+    if (!text.trim()) return
+    if (!key) { errEl.textContent = 'KEY REQUIRED'; return }
 
-    // Persist prefs (SEC-05 — cipher + key stay on device only).
-    putSettings(convId, { cipher, key })
+    putSettings(convId, { cipher, key, keep: prefs.keep })
+    prefs.cipher = cipher
+    prefs.key    = key
 
-    // Apply the historical cipher first (encode=true), then AES-encrypt the result.
     const cipherText = applyCipher(text, cipher, key, true)
     let payload, iv, salt
     try {
@@ -309,27 +201,16 @@ router.register('chat', async (convId) => {
       return
     }
 
-    // ── Optimistic insert (D-07) ──────────────────────────────────────
     const tempId = 'opt-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8)
-    const optimistic = {
-      id: tempId,
-      conversation_id: convId,
-      sender_id: user.id,
-      payload,
-      iv,
-      salt,
-      created_at: new Date().toISOString()
-    }
+    const optimistic = { id: tempId, conversation_id: convId, sender_id: user.id, payload, iv, salt, created_at: new Date().toISOString() }
     messages.push(optimistic)
     seenIds.add(tempId)
-    decoded[tempId] = text   // capture plaintext so our own bubble shows it
+    decoded[tempId] = text
     textEl.value = ''
     renderMessages()
 
-    // ── Transport call ────────────────────────────────────────────────
     const { result: row, error: sendErr } = await transport.sendMessage(convId, user.id, payload, iv, salt)
     if (sendErr || !row) {
-      // Rollback optimistic bubble on failure.
       messages = messages.filter(m => m.id !== tempId)
       seenIds.delete(tempId)
       delete decoded[tempId]
@@ -338,7 +219,6 @@ router.register('chat', async (convId) => {
       return
     }
 
-    // Promote optimistic entry to the real server row, preserving the decoded text.
     const idx = messages.findIndex(m => m.id === tempId)
     if (idx !== -1) {
       messages[idx] = row
@@ -350,30 +230,26 @@ router.register('chat', async (convId) => {
     }
   }
 
-  // ── Realtime subscription (D-06) ──────────────────────────────────────
-  // INSERT-only, scoped to convId. Dedupe by message id to swallow our own echo.
+  // ── Realtime subscription ─────────────────────────────────────────────
   const unsubMessages = transport.subscribeMessages(convId, async (msg) => {
-    if (seenIds.has(msg.id)) return   // already rendered (optimistic or duplicate)
+    if (seenIds.has(msg.id)) return
     seenIds.add(msg.id)
     messages.push(msg)
     justArrivedIds.add(msg.id)
 
-    // CHAT-10: auto-decode incoming message if keep=true
     if (prefs.keep && prefs.cipher && prefs.key) {
       const ct = await decrypt(msg.payload, msg.iv, msg.salt, prefs.key)
       if (ct !== null) decoded[msg.id] = applyCipher(ct, prefs.cipher, prefs.key, false)
     }
 
     renderMessages()
-    // Clear justArrivedIds after animation window (CHAT-11)
-    setTimeout(() => { justArrivedIds.clear() }, 700)
+    setTimeout(() => { justArrivedIds.delete(msg.id) }, 800)
   })
 
-  // ── Delegated event listener on messages-list ─────────────────────────
-  // Attached once on mount; discarded naturally when router replaces innerHTML.
+  // ── Delegated click handler ───────────────────────────────────────────
   listEl.addEventListener('click', async (e) => {
 
-    // MORE expand (D-05)
+    // MORE expand
     if (e.target.classList.contains('bubble-more')) {
       e.stopPropagation()
       const text = e.target.previousElementSibling
@@ -385,32 +261,17 @@ router.register('chat', async (convId) => {
       return
     }
 
-    // Card flip — only when supports3D, only on front face clicks (CHAT-05, CHAT-06)
-    const flippable = e.target.closest('.bubble.flippable')
-    if (supports3D && flippable && !e.target.closest('.bubble-back')) {
-      const id = flippable.dataset.msgId
-      // Flip back the currently-open card if it's different (CHAT-06)
-      if (openFlippedId && openFlippedId !== id) {
-        const prev = listEl.querySelector(`.bubble.flippable[data-msg-id="${openFlippedId}"]`)
-        if (prev) prev.classList.remove('flipped')
-      }
-      flippable.classList.toggle('flipped')
-      openFlippedId = flippable.classList.contains('flipped') ? id : null
-      return
-    }
-
-    // DECODE MESSAGE button on card back (CHAT-07, CHAT-08, CHAT-09)
+    // DECODE MESSAGE button
     if (e.target.classList.contains('decode-go')) {
       e.stopPropagation()
-      const back    = e.target.closest('.bubble-back')
-      const bubble  = e.target.closest('.bubble.flippable')
-      const msgId   = bubble.dataset.msgId
-      const cipherSel = back.querySelector('.decode-cipher')
-      const keyIn     = back.querySelector('.decode-key')
-      const keepIn    = back.querySelector('.decode-keep')
-      const errOut    = back.querySelector('.decode-err')
-      const cipher = cipherSel.value
-      const key    = keyIn.value
+      const msgId    = e.target.dataset.msgId
+      const panel    = document.getElementById('dp-' + msgId)
+      const cipherSel = panel.querySelector('.decode-cipher')
+      const keyIn    = panel.querySelector('.decode-key')
+      const keepIn   = panel.querySelector('.decode-keep')
+      const errOut   = panel.querySelector('.decode-err')
+      const cipher   = cipherSel.value
+      const key      = keyIn.value
       errOut.textContent = ''
       if (!key) { errOut.textContent = 'KEY REQUIRED'; return }
       const m = messages.find(x => x.id === msgId)
@@ -420,10 +281,10 @@ router.register('chat', async (convId) => {
       const plaintext = applyCipher(cipherText, cipher, key, false)
       decoded[msgId] = plaintext
       putSettings(convId, { cipher, key, keep: keepIn.checked })
-      prefs.cipher = cipher; prefs.key = key; prefs.keep = keepIn.checked
-      bubble.classList.remove('flipped')
-      openFlippedId = null
-      // CHAT-10: if keep=true, bulk-decode all other locked messages now
+      prefs.cipher = cipher
+      prefs.key    = key
+      prefs.keep   = keepIn.checked
+      openPanelId  = null
       if (prefs.keep) {
         await Promise.all(messages.map(async (mm) => {
           if (decoded[mm.id]) return
@@ -435,20 +296,38 @@ router.register('chat', async (convId) => {
       return
     }
 
-    // Lock-icon fallback button → open overlay (D-02)
-    const lockBtn = e.target.closest('.lock-icon')
-    if (!supports3D && lockBtn) {
-      e.stopPropagation()
-      openOverlay(lockBtn.dataset.msgId)
-      return
+    // Tap bubble → toggle its decode panel
+    const bubble = e.target.closest('.bubble[data-msg-id]')
+    if (bubble) {
+      const id    = bubble.dataset.msgId
+      const panel = document.getElementById('dp-' + id)
+      if (!panel) return
+
+      if (openPanelId && openPanelId !== id) {
+        const prev = document.getElementById('dp-' + openPanelId)
+        if (prev) prev.classList.remove('open')
+      }
+
+      const opening = !panel.classList.contains('open')
+      panel.classList.toggle('open')
+      openPanelId = opening ? id : null
     }
   })
 
-  // ── Event listeners ───────────────────────────────────────────────────
-  function onBack()         { router.navigate('#/') }
-  function onCipherChange() { putSettings(convId, { cipher: cipherEl.value }) }
-  function onKeyChange()    { putSettings(convId, { key: keyEl.value }) }
-  function onTextKey(e)     { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); onSend() } }
+  // ── Compose bar events ────────────────────────────────────────────────
+  function onBack()      { router.navigate('#/') }
+  function onTextKey(e)  { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); onSend() } }
+
+  function onCipherChange() {
+    prefs.cipher = cipherEl.value
+    putSettings(convId, { cipher: prefs.cipher, key: prefs.key, keep: prefs.keep })
+    if (prefs.keep && prefs.key) reDecodeAll()
+  }
+
+  function onKeyChange() {
+    prefs.key = keyEl.value
+    putSettings(convId, { cipher: prefs.cipher, key: prefs.key, keep: prefs.keep })
+  }
 
   back.addEventListener('click', onBack)
   sendBtn.addEventListener('click', onSend)
@@ -456,7 +335,6 @@ router.register('chat', async (convId) => {
   keyEl.addEventListener('input', onKeyChange)
   textEl.addEventListener('keydown', onTextKey)
 
-  // ── Cleanup (called by router when navigating away) ───────────────────
   return () => {
     unsubMessages()
     back.removeEventListener('click', onBack)

@@ -510,54 +510,30 @@ html, body {
 
 .accent { color: var(--accent); }
 
-/* ── Phase 3: Card flip ──────────────────────────────────── */
+/* ── Phase 3: Inline decode panel (slide-down) ───────────── */
 
-.bubble.flippable {
-  position: relative;
-  perspective: 800px;
-  background: transparent;
-  border: none;
-  padding: 0;
+.decode-panel-inline {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease, opacity 0.2s ease;
+  opacity: 0;
 }
 
-.bubble-card {
-  position: relative;
-  width: 100%;
-  transform-style: preserve-3d;
-  transition: transform 0.45s ease;
+.decode-panel-inline.open {
+  max-height: 160px;
+  opacity: 1;
 }
 
-.bubble.flipped .bubble-card {
-  transform: rotateY(180deg);
-}
-
-.bubble-front,
-.bubble-back {
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  padding: 10px 13px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-}
-
-.bubble.mine .bubble-front,
-.bubble.mine .bubble-back {
-  background: var(--accent-dim);
-  border-color: rgba(212,168,67,0.18);
-}
-
-.bubble-back {
-  position: absolute;
-  inset: 0;
-  transform: rotateY(180deg);
+.decode-panel-inline .panel-row {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  gap: 6px;
+  align-items: center;
+  padding: 6px 0 0;
+  flex-wrap: wrap;
 }
 
-.bubble-back .panel-row { gap: 6px; }
-.bubble-back .field-sm  { font-size: 11px; padding: 6px 8px; }
-.bubble-back .btn-sm    { padding: 6px 10px; }
+.decode-panel-inline .field-sm  { font-size: 11px; padding: 6px 8px; }
+.decode-panel-inline .btn-sm    { padding: 6px 10px; }
 
 /* ── Phase 3: MORE expand on long encoded text ───────────── */
 
@@ -591,32 +567,21 @@ html, body {
 /* ── Phase 3: Lock pulse (CHAT-11) ───────────────────────── */
 
 @keyframes lock-pulse {
-  0%   { opacity: 0.45; }
-  50%  { opacity: 1; color: var(--accent-hi); }
-  100% { opacity: 0.45; }
+  0%   { opacity: 0.5;  transform: scale(1);    color: inherit;          text-shadow: none; }
+  40%  { opacity: 1;    transform: scale(1.35); color: var(--accent-hi); text-shadow: 0 0 10px var(--accent); }
+  100% { opacity: 0.6;  transform: scale(1);    color: inherit;          text-shadow: none; }
 }
 
 .lock-glyph.pulse {
-  animation: lock-pulse 0.6s ease forwards;
+  animation: lock-pulse 0.7s ease forwards;
+  display: inline-block;
 }
 
-/* ── Phase 3: Decode overlay fallback (D-02) ─────────────── */
+/* ── Phase 3: lock glyph base ────────────────────────────── */
 
-.decode-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(7,7,7,0.88);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-  padding: 24px;
-}
-
-.decode-overlay.hidden { display: none; }
-
-.decode-overlay .decode-panel {
-  width: 100%;
-  max-width: 420px;
-  border: 1px solid var(--border);
+.lock-glyph {
+  display: inline-block;
+  margin-right: 5px;
+  opacity: 0.6;
+  font-size: 15px;
 }
