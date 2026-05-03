@@ -1,7 +1,8 @@
 ---
 phase: 4
 slug: profile-settings-themes
-status: draft
+status: approved
+reviewed_at: 2026-05-03
 shadcn_initialized: false
 preset: none
 created: 2026-05-03
@@ -186,7 +187,7 @@ All reuse existing CSS classes from `style.css`. No new component patterns unles
 
 **1. Inbox Avatar Button (topbar, top-right)**
 
-- Element: `<button class="icon-btn avatar-btn">` containing a 32×32px colored circle with user's initial
+- Element: `<button class="icon-btn avatar-btn" aria-label="Open settings">` containing a 32×32px colored circle with user's initial
 - Tap target: 44×44px (`.icon-btn` sizing, existing)
 - Avatar circle: 32px diameter, `_strColor(username)` background, white initial at 14px weight 500
 - Position: rightmost element in `.topbar-actions` (replaces spacer `<div style="width:44px">`)
@@ -198,7 +199,7 @@ Section label: `APPEARANCE` — uses existing `.settings-section-label` class.
 
 **3. Theme Swatch Cards**
 
-- Container: flex row, `gap: 12px`, `padding: 14px 16px` (matching `.conv-row` horizontal padding)
+- Container: flex row, `gap: 8px`, `padding: 12px 16px` (matching `.conv-row` horizontal padding)
 - Each swatch card: `min-height: 80px`, `flex: 1`, `border: 1px solid var(--border2)`, `background: var(--surface)`, `cursor: pointer`, `display: flex`, `flex-direction: column`, `align-items: center`, `justify-content: center`, `gap: 8px`, `transition: border-color 0.15s`
 - Swatch preview block: `width: 100%; height: 32px` — shows the theme's `--bg` color as a solid bar (no texture, no gradient)
 - Theme name label: 11px, letter-spacing 0.1em, uppercase, color `var(--text-mid)`
