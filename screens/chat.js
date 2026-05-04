@@ -342,7 +342,6 @@ router.register('chat', async (convId) => {
     const usesKey = CIPHER_USES_KEY[prefs.cipher]
     keyEl.placeholder = usesKey ? 'key' : 'enc. key'
     keyEl.style.opacity = usesKey ? '' : '0.5'
-    if (prefs.keep && prefs.key) reDecodeAll()
   }
 
   function onKeyChange() {
