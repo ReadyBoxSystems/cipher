@@ -19,6 +19,13 @@ router.register('', async () => {
   if (!user)               { router.navigate('#/auth');  return () => {} }
   if (!store.get('profile')) { router.navigate('#/setup'); return () => {} }
 
+  // Own-user avatar values for topbar button (PROF-06).
+  const profile     = store.get('profile')
+  const myUsername  = profile?.username || ''
+  const myDisplay   = profile?.display_name || myUsername
+  const myInitial   = (myDisplay[0] || myUsername[0] || '?').toUpperCase()
+  const myAvatarBg  = _strColor(myUsername)
+
   // ── Render shell immediately so the screen never flashes blank ──────
   app.innerHTML = `
     <div class="screen">
@@ -26,6 +33,9 @@ router.register('', async () => {
         <div class="topbar-title">CIPHER</div>
         <div class="topbar-actions">
           <button class="icon-btn" id="inbox-new" type="button" aria-label="New conversation">+</button>
+          <button class="icon-btn avatar-btn" id="inbox-avatar" type="button" aria-label="Open settings">
+            <div class="avatar" style="background:${myAvatarBg};width:32px;height:32px;font-size:14px;font-weight:500">${_esc(myInitial)}</div>
+          </button>
         </div>
       </div>
       <div class="inbox-list" id="inbox-list">
@@ -34,8 +44,9 @@ router.register('', async () => {
     </div>
   `
 
-  const listEl = app.querySelector('#inbox-list')
-  const newBtn = app.querySelector('#inbox-new')
+  const listEl   = app.querySelector('#inbox-list')
+  const newBtn   = app.querySelector('#inbox-new')
+  const avatarBtn = app.querySelector('#inbox-avatar')
 
   // ── Local cache for last messages (convId → message row or null) ─────
   const lastMsgs = {}
@@ -125,9 +136,13 @@ router.register('', async () => {
   function onNewClick() {
     router.navigate('#/new')
   }
+  function onAvatarClick() {
+    router.navigate('#/settings')
+  }
 
   listEl.addEventListener('click', onListClick)
   newBtn.addEventListener('click', onNewClick)
+  avatarBtn.addEventListener('click', onAvatarClick)
 
   // ── Realtime subscriptions (D-06) ───────────────────────────────────
   const unsubs = []
@@ -166,6 +181,7 @@ router.register('', async () => {
   return () => {
     listEl.removeEventListener('click', onListClick)
     newBtn.removeEventListener('click', onNewClick)
+    avatarBtn.removeEventListener('click', onAvatarClick)
     unsubMembers()
     for (const unsub of unsubs) unsub()
   }
