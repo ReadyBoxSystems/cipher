@@ -9,6 +9,7 @@ create table profiles (
   username      text unique not null,
   display_name  text,
   avatar_seed   text default gen_random_uuid()::text,
+  theme         text default 'postdesk',
   created_at    timestamptz default now()
 );
 
@@ -124,3 +125,12 @@ $$;
 create trigger on_message_insert
   after insert on messages
   for each row execute function update_conversation_timestamp();
+
+-- ── Phase 4 migration (theme column) ──────────────────────────────────────────
+-- For existing Supabase deployments where this schema was already applied,
+-- run this migration in the SQL Editor instead of recreating the table:
+--
+--   alter table profiles add column if not exists theme text default 'postdesk';
+--
+-- Existing users will have NULL until they pick a theme; the app falls back to
+-- 'postdesk' via localStorage default (see app.js boot block).
