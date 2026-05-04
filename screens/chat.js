@@ -124,16 +124,18 @@ router.register('chat', async (convId) => {
         `
       }
 
-      // Locked bubble — shows cipher text if key entered, otherwise AES payload
-      const surface   = (aesDecoded[msg.id] || msg.payload).slice(0, 200)
-      const needsClip = surface.length > 200 || (surface.match(/\n/g) || []).length > 5
+      // Locked bubble — shows cipher text if AES was stripped, nothing otherwise.
+      // Never shows msg.payload (raw base64 AES blob) — that's an implementation detail.
+      const surface   = aesDecoded[msg.id] ? aesDecoded[msg.id].slice(0, 200) : null
+      const needsClip = surface !== null && (surface.length >= 200 || (surface.match(/\n/g) || []).length > 5)
 
       return `
         <div class="msg-wrap ${mine ? 'mine' : 'theirs'}">
           <div class="bubble ${mine ? 'mine' : 'theirs'}" data-msg-id="${msg.id}" style="cursor:pointer">
             <span class="lock-glyph${isPulse ? ' pulse' : ''}">⚿</span>
-            <div class="bubble-text${needsClip ? ' clipped' : ''}">${_esc(surface)}</div>
-            ${needsClip ? '<span class="bubble-more">MORE</span>' : ''}
+            ${surface !== null
+              ? `<div class="bubble-text${needsClip ? ' clipped' : ''}">${_esc(surface)}</div>${needsClip ? '<span class="bubble-more">MORE</span>' : ''}`
+              : ''}
           </div>
           ${_decodePanel(msg.id)}
           <div class="msg-time">${_ago(msg.created_at)}</div>
@@ -254,11 +256,11 @@ router.register('chat', async (convId) => {
     messages.push(msg)
     justArrivedIds.add(msg.id)
 
-    if (prefs.key) {
+    if (prefs.keep && prefs.key && prefs.cipher) {
       const ct = await decrypt(msg.payload, msg.iv, msg.salt, prefs.key)
       if (ct !== null) {
         aesDecoded[msg.id] = ct
-        if (prefs.keep && prefs.cipher) decoded[msg.id] = applyCipher(ct, prefs.cipher, prefs.key, false)
+        decoded[msg.id] = applyCipher(ct, prefs.cipher, prefs.key, false)
       }
     }
 
