@@ -1,3 +1,9 @@
 node_modules/
 .DS_Store
 *.log
+
+# Internal dev / planning — never push to GitHub
+.planning/
+.claude/
+.serena/
+CLAUDE.md
