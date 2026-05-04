@@ -1,4 +1,4 @@
-const CACHE = 'cipher-v2'
+const CACHE = 'cipher-v3'
 const ASSETS = [
   './',
   './index.html',
@@ -15,7 +15,8 @@ const ASSETS = [
   './state/store.js',
   './lib/router.js',
   './lib/settings.js',
-  './lib/utils.js'
+  './lib/utils.js',
+  'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Special+Elite&display=swap'
 ]
 
 self.addEventListener('install', e => {
