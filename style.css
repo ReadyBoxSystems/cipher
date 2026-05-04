@@ -14,6 +14,7 @@
   --accent-dim: rgba(212,168,67,0.12);
   --danger:     #cc3322;
   --font: 'JetBrains Mono', 'Cascadia Code', 'Consolas', monospace;
+  --font-display: var(--font);
 }
 
 html, body {
@@ -585,3 +586,85 @@ html, body {
   opacity: 0.6;
   font-size: 15px;
 }
+
+/* ── Topbar center (settings screen 3-column topbar layout) ─── */
+
+.topbar-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ── Settings screen ────────────────────────────────────── */
+
+.settings-list {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.settings-header {
+  padding: 24px 20px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.settings-header .avatar {
+  width: 48px;
+  height: 48px;
+  font-size: 18px;
+}
+
+.settings-header-info .name {
+  font-size: 13px;
+  color: var(--text);
+  letter-spacing: 0.04em;
+}
+
+.settings-header-info .email {
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.06em;
+  margin-top: 4px;
+}
+
+.settings-section-label {
+  padding: 18px 20px 8px;
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+
+.settings-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.settings-row + .settings-row { border-top: none; }
+.settings-row.readonly { cursor: default; }
+.settings-row.danger .label { color: var(--danger); }
+
+.settings-row .label {
+  font-size: 12px;
+  color: var(--text);
+  letter-spacing: 0.04em;
+}
+
+.settings-row .value {
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 0.04em;
+}
+
+.settings-row .value.editable { color: var(--text-mid); }
+.settings-row .value .chev { color: var(--text-dim); margin-left: 8px; }
