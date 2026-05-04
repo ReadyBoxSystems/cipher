@@ -25,6 +25,10 @@ router.register('settings', async () => {
   const initial     = (displayName[0] || username[0] || '?').toUpperCase()
   const avatarBg    = _strColor(username)
 
+  // Read current theme from <html> (set by app.js boot block).
+  // Falls back to 'postdesk' if attribute somehow missing (D-15).
+  const currentTheme = document.documentElement.dataset.theme || 'postdesk'
+
   app.innerHTML = `
     <div class="screen">
       <div class="topbar">
@@ -57,6 +61,18 @@ router.register('settings', async () => {
           <span class="value">${_esc(email)}</span>
         </div>
 
+        <div class="settings-section-label">APPEARANCE</div>
+        <div class="theme-swatches" id="settings-theme-swatches">
+          <div class="theme-swatch ${currentTheme === 'postdesk' ? 'active' : ''}" data-theme="postdesk" role="button" tabindex="0" aria-label="Postdesk theme">
+            <div class="swatch-preview" data-theme-preview="postdesk"></div>
+            <div class="swatch-label">POSTDESK</div>
+          </div>
+          <div class="theme-swatch ${currentTheme === 'terminal' ? 'active' : ''}" data-theme="terminal" role="button" tabindex="0" aria-label="Terminal theme">
+            <div class="swatch-preview" data-theme-preview="terminal"></div>
+            <div class="swatch-label">TERMINAL</div>
+          </div>
+        </div>
+
         <div class="settings-section-label">ACCOUNT</div>
         <div class="settings-row danger" id="settings-signout">
           <span class="label">Sign out</span>
@@ -74,6 +90,7 @@ router.register('settings', async () => {
   const nameRow     = app.querySelector('#settings-displayname-row')
   const nameValueEl = app.querySelector('#settings-displayname-value')
   const signoutRow  = app.querySelector('#settings-signout')
+  const swatchesEl  = app.querySelector('#settings-theme-swatches')
 
   function renderNameValue(value) {
     nameValueEl.classList.add('editable')
@@ -123,6 +140,28 @@ router.register('settings', async () => {
     input.addEventListener('keydown', onKey)
   }
 
+  function onSwatchClick(e) {
+    const swatch = e.target.closest('.theme-swatch')
+    if (!swatch) return
+    const newTheme = swatch.dataset.theme  // 'postdesk' | 'terminal'
+    if (!newTheme) return
+    if (newTheme === (document.documentElement.dataset.theme || 'postdesk')) return  // no-op same theme
+
+    // 1. Apply immediately to <html> — CSS cascade does the visual switch (THEME-03).
+    document.documentElement.dataset.theme = newTheme
+    // 2. Persist locally (survives reload — THEME-04).
+    localStorage.setItem('cipher-theme', newTheme)
+    // 3. Update store profile so other screens see new value.
+    const prev = store.get('profile')
+    if (prev) store.set('profile', { ...prev, theme: newTheme })
+    // 4. Sync to Supabase async (cross-device — THEME-04). Silent on error: localStorage is source of truth.
+    transport.updateProfile(user.id, { theme: newTheme }).catch(() => {})
+    // 5. Re-render swatch active states (toggle .active class without re-mounting).
+    swatchesEl.querySelectorAll('.theme-swatch').forEach(el => {
+      el.classList.toggle('active', el.dataset.theme === newTheme)
+    })
+  }
+
   async function onSignOut() {
     await transport.signOut()
     store.set('user', null)
@@ -133,10 +172,12 @@ router.register('settings', async () => {
   back.addEventListener('click', onBack)
   nameRow.addEventListener('click', onNameRowClick)
   signoutRow.addEventListener('click', onSignOut)
+  swatchesEl.addEventListener('click', onSwatchClick)
 
   return () => {
     back.removeEventListener('click', onBack)
     nameRow.removeEventListener('click', onNameRowClick)
     signoutRow.removeEventListener('click', onSignOut)
+    swatchesEl.removeEventListener('click', onSwatchClick)
   }
 })
