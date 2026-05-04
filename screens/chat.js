@@ -155,10 +155,14 @@ router.register('chat', async (convId) => {
     listEl.scrollTop = listEl.scrollHeight
   }
 
-  // ── Re-decode all messages with current prefs ────────────────────────
+  // ── Decode messages not yet decoded with current prefs ──────────────
+  // Never overwrites messages already in decoded — changing cipher/key mid-session
+  // can't corrupt a message that was correctly decoded with its original settings.
+  // Use the decode panel to explicitly re-decode a specific message.
   async function reDecodeAll() {
     if (!prefs.key) return
     await Promise.all(messages.map(async (m) => {
+      if (decoded[m.id]) return
       const ct = await decrypt(m.payload, m.iv, m.salt, prefs.key)
       if (ct !== null) { aesDecoded[m.id] = ct; decoded[m.id] = applyCipher(ct, prefs.cipher, prefs.key, false) }
     }))
