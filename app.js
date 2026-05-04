@@ -21,6 +21,13 @@ import './screens/settings.js'
 import './screens/inbox.js'
 import './screens/chat.js'
 
+// ── Apply saved theme synchronously, before any render (THEME-01, THEME-02) ──
+// Default for new users (no saved entry): 'postdesk' (D-15).
+// Reading localStorage and writing dataset is synchronous — no flash possible
+// because no screen has rendered yet at this point in boot.
+const _savedTheme = localStorage.getItem('cipher-theme') || 'postdesk'
+document.documentElement.dataset.theme = _savedTheme
+
 // ── Service worker (D-09) ─────────────────────────────────────────────
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js', { scope: './' }).catch(() => {})
@@ -36,12 +43,26 @@ transport.getSession().then(async ({ user }) => {
   if (user) {
     const { result: profile } = await transport.getProfile(user.id)
     store.set('profile', profile)
+    // Cross-device theme sync (D-14, THEME-04): if Supabase profile.theme
+    // differs from local, prefer the server value (it represents the user's
+    // last deliberate choice on any device). Apply to <html> and persist locally.
+    if (profile && profile.theme && profile.theme !== localStorage.getItem('cipher-theme')) {
+      localStorage.setItem('cipher-theme', profile.theme)
+      document.documentElement.dataset.theme = profile.theme
+    }
   }
   transport.onAuthChange(async (u) => {
     store.set('user', u)
     if (u) {
       const { result: profile } = await transport.getProfile(u.id)
       store.set('profile', profile)
+      // Cross-device theme sync (D-14, THEME-04): if Supabase profile.theme
+      // differs from local, prefer the server value (it represents the user's
+      // last deliberate choice on any device). Apply to <html> and persist locally.
+      if (profile && profile.theme && profile.theme !== localStorage.getItem('cipher-theme')) {
+        localStorage.setItem('cipher-theme', profile.theme)
+        document.documentElement.dataset.theme = profile.theme
+      }
     } else {
       store.set('profile', null)
     }
