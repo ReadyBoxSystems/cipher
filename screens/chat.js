@@ -89,16 +89,6 @@ router.register('chat', async (convId) => {
     `
   }
 
-  // ── AES-only decrypt: reveals cipher text without applying historical cipher ──
-  async function aesDecodeAll() {
-    if (!prefs.key) return
-    await Promise.all(messages.map(async (m) => {
-      if (aesDecoded[m.id] || decoded[m.id]) return
-      const ct = await decrypt(m.payload, m.iv, m.salt, prefs.key)
-      if (ct !== null) aesDecoded[m.id] = ct
-    }))
-    renderMessages()
-  }
 
   // ── Render ───────────────────────────────────────────────────────────
   function renderMessages() {
@@ -157,19 +147,6 @@ router.register('chat', async (convId) => {
     listEl.scrollTop = listEl.scrollHeight
   }
 
-  // ── Decode messages not yet decoded with current prefs ──────────────
-  // Never overwrites messages already in decoded — changing cipher/key mid-session
-  // can't corrupt a message that was correctly decoded with its original settings.
-  // Use the decode panel to explicitly re-decode a specific message.
-  async function reDecodeAll() {
-    if (!prefs.key) return
-    await Promise.all(messages.map(async (m) => {
-      if (decoded[m.id]) return
-      const ct = await decrypt(m.payload, m.iv, m.salt, prefs.key)
-      if (ct !== null) { aesDecoded[m.id] = ct; decoded[m.id] = applyCipher(ct, prefs.cipher, prefs.key, false) }
-    }))
-    renderMessages()
-  }
 
   // ── Initial fetch ─────────────────────────────────────────────────────
   const { result: msgs, error: fetchErr } = await transport.getMessages(convId)
@@ -181,14 +158,10 @@ router.register('chat', async (convId) => {
     store.set('messages', { ...(store.get('messages') || {}), [convId]: messages })
 
     if (prefs.keep && prefs.cipher && prefs.key) {
-      // Full auto-decode: AES + historical cipher
       await Promise.all(messages.map(async (m) => {
         const ct = await decrypt(m.payload, m.iv, m.salt, prefs.key)
         if (ct !== null) { aesDecoded[m.id] = ct; decoded[m.id] = applyCipher(ct, prefs.cipher, prefs.key, false) }
       }))
-    } else if (prefs.key) {
-      // Key known but cipher not set or keep=false — show cipher text layer only
-      await aesDecodeAll()
     }
 
     renderMessages()
@@ -353,9 +326,6 @@ router.register('chat', async (convId) => {
   function onKeyChange() {
     prefs.key = keyEl.value
     putSettings(convId, { cipher: prefs.cipher, key: prefs.key, keep: prefs.keep })
-    // Don't clear existing decodes — only try to decode messages not yet decoded
-    if (prefs.keep && prefs.cipher && prefs.key) reDecodeAll()
-    else aesDecodeAll()
   }
 
   back.addEventListener('click', onBack)
