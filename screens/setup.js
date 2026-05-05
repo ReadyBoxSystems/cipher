@@ -87,7 +87,8 @@ router.register('setup', async () => {
     }
 
     store.set('profile', result)
-    router.navigate('#/')
+    const pending = sessionStorage.getItem('pending_invite')
+    router.navigate(pending ? `#/invite/${pending}` : '#/')
   }
 
   async function onSignOut() {

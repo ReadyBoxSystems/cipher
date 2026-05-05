@@ -20,6 +20,8 @@ import './screens/setup.js'
 import './screens/settings.js'
 import './screens/inbox.js'
 import './screens/chat.js'
+import './screens/new.js'
+import './screens/invite.js'
 
 // ── Apply saved theme synchronously, before any render (THEME-01, THEME-02) ──
 // Default for new users (no saved entry): 'postdesk' (D-15).

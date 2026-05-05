@@ -84,14 +84,11 @@ router.register('auth', async () => {
     store.set('user', user)
     // First-time user → setup. Returning user → inbox.
     // Profile is hydrated by app.js onAuthChange; check it on next tick via router decision below.
+    const pending = sessionStorage.getItem('pending_invite')
     if (mode === 'up') {
       router.navigate('#/setup')
     } else {
-      // For sign-in, profile may not be hydrated yet (onAuthChange races). Inbox route
-      // (Phase 3) will redirect to #/setup itself if profile is null. For Phase 2,
-      // navigating to #/ is correct — the router has no inbox handler yet, so the
-      // empty-shell is fine.
-      router.navigate('#/')
+      router.navigate(pending ? `#/invite/${pending}` : '#/')
     }
   }
   form.addEventListener('submit', onSubmit)
